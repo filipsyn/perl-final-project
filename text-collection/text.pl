@@ -27,6 +27,12 @@ for my $line (<F>){
     # Striping out HTML tags
     $text =~ s/(<([^>]+)>)//g;
 
+    # Removing any non-letter character
+    $text =~ s/[^[:alpha:][:space:]]//g;
+
+    # Making text uppercase
+    $text = uc $text;
+
 
     print "Trida $class, Text: $text\n";
 }
