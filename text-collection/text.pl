@@ -19,3 +19,14 @@ die "Invalid local weight value provided.\nPlease provide either 'tp' (default) 
 
 # Opening input file
 open F, "$input_file" or die "Can't open file $input_file\n";
+
+for my $line (<F>){
+    chomp $line;
+    my ($class, $text) = split("\t", $line);
+
+    # Striping out HTML tags
+    $text =~ s/(<([^>]+)>)//g;
+
+
+    print "Trida $class, Text: $text\n";
+}

@@ -1,0 +1,5 @@
+P	Ahoj, jak to jde?
+N	mega bad :-(((
+P	Nazdar, jo dobry.
+N	Tyjo, uplne hrozny!
+P	<b>supr</b>
