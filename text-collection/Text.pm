@@ -1,9 +1,8 @@
 package Text;
 
 use Exporter;
-@ISA = qw ('Exporter');
-@EXPORT = qw ('strip_text');
-@EXPORT_OK = qw(strip_text);
+@ISA = qw (Exporter);
+@EXPORT = qw (strip_text);
 
 
 sub strip_text {
