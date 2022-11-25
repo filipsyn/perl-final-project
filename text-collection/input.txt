@@ -1,5 +1,6 @@
-P	Ahoj, jak to jde?
+P	Ahoj, jak to to jde?
 N	mega bad :-(((
 P	Nazdar, jo dobry.
 N	Tyjo, uplne hrozny!
 P	<b>supr</b>
+N	Bizar Bizar Bizar
