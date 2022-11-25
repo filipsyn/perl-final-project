@@ -1,7 +1,5 @@
 use strict;
-
 use Getopt::Long;
-
 use lib '.';
 use Text;
 
@@ -10,6 +8,9 @@ our $input_file = "input.txt";
 our $minimal_length = 1;
 our $minimal_occurance = 1;
 our $local_weight = "tp";
+
+our @documents = ();
+our @word_in_file = ();
 
 # Parsing command line arguments to corresponding variables.
 GetOptions( "input-file|f=s" => \$input_file,
@@ -29,7 +30,35 @@ for my $line (<F>){
     chomp $line;
     my ($class, $text) = split("\t", $line);
 
-    $text = Text::strip_text($text);
+    $text = Text::strip_text($text);    
 
     print "Trida $class, Text: $text\n";
+
+    # List of words in whole line
+    my @words = split ' ', $text;
+    
+    # Initialization of hash of words and occurances.
+    my %line;
+
+    for my $word (@words) {
+        $line{$word}++ if (length($word) >= $minimal_length);
+    }
+
+    if ($local_weight eq 'tp') {
+        # In case of local weight set to "Term Presence"
+        # Turn values into "1" - occured, "0" - didn't occur
+        for my $word (keys %line) {
+            $line{$word} = $line{$word} ** 0 unless ($line{$word} == 0);
+        }
+    }
+   
+
+    # Adding document class
+    $line{__class__} = $class;
+   
+
+    push @documents, \%line;
 }
+
+use Data::Dumper;
+print Dumper(\@documents);
