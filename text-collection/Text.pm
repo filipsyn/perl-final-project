@@ -2,7 +2,7 @@ package Text;
 
 use Exporter;
 @ISA = qw (Exporter);
-@EXPORT = qw (strip_text);
+@EXPORT = qw (strip_text in_array);
 
 
 sub strip_text {
@@ -19,6 +19,22 @@ sub strip_text {
     $text =~ s/[^[:alpha:][:space:]]//g;
 
     return uc $text;
+}
+
+sub in_array {
+    # Checks if element is in array
+    # Arguments
+    #   -array
+    #   -elem: searched element
+    # Returns 1 if element is in array, 0 if element isn't present
+
+    %args = @_;
+    
+    for my $e (@{$args{-array}}) {
+        return 1 if ($e eq $args{-elem});
+    }
+    
+    return 0;
 }
 
 1;
