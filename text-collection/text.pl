@@ -20,9 +20,12 @@ die "Invalid local weight value provided.\nPlease provide either 'tp' (default) 
 # Opening input file
 open F, "$input_file" or die "Can't open file $input_file\n";
 
-for my $line (<F>){
-    chomp $line;
-    my ($class, $text) = split("\t", $line);
+sub strip_text {
+    # Stripes HTML tags and non-letter characters from text.
+    # Returns cleaned text in uppercase, to standardize the text.
+
+    # Takes "dirty" text as only argument
+    my $text = shift;
 
     # Striping out HTML tags
     $text =~ s/(<([^>]+)>)//g;
@@ -30,9 +33,14 @@ for my $line (<F>){
     # Removing any non-letter character
     $text =~ s/[^[:alpha:][:space:]]//g;
 
-    # Making text uppercase
-    $text = uc $text;
+    return uc $text;
+}
 
+for my $line (<F>){
+    chomp $line;
+    my ($class, $text) = split("\t", $line);
+
+    $text = strip_text($text);
 
     print "Trida $class, Text: $text\n";
 }
