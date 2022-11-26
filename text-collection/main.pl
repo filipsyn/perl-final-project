@@ -11,6 +11,11 @@ our $local_weight = "tp";
 
 our @documents = ();
 our @unique_words = ();
+# TODO: Remake unique_word to be hash
+# word => total occurances
+
+
+# TODO: Add removing words with low occurance (use remove function for hash)
 
 # Parsing command line arguments to corresponding variables.
 GetOptions( "input-file|f=s" => \$input_file,
@@ -27,14 +32,11 @@ unless ($local_weight eq "tp" or $local_weight eq "tf");
 # Opening input file
 open F, "$input_file" or die "Can't open file $input_file\n";
 
-
 for my $line (<F>){
     chomp $line;
     my ($class, $text) = split("\t", $line);
 
     $text = Text::strip_text($text);    
-
-    #print "Trida $class, Text: $text\n";
 
     # List of words in whole line
     my @words = split ' ', $text;
@@ -62,11 +64,9 @@ for my $line (<F>){
             unless ($line{$word} == 0);
         }
     }
-   
 
     # Adding document class
-    $line{__class__} = $class;
-   
+    $line{_class_} = $class;
 
     push @documents, \%line;
 }
@@ -74,4 +74,3 @@ for my $line (<F>){
 use Data::Dumper;
 
 print Dumper(\@documents);
-print Dumper(\@unique_words)
