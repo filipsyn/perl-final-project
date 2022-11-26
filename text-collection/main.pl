@@ -10,7 +10,7 @@ our $minimal_occurance = 1;
 our $local_weight = "tp";
 
 our @documents = ();
-our @unique_words = ();
+our %unique_words;
 # TODO: Remake unique_word to be hash
 # word => total occurances
 
@@ -32,6 +32,7 @@ unless ($local_weight eq "tp" or $local_weight eq "tf");
 # Opening input file
 open F, "$input_file" or die "Can't open file $input_file\n";
 
+# Processing input file
 for my $line (<F>){
     chomp $line;
     my ($class, $text) = split("\t", $line);
@@ -44,15 +45,14 @@ for my $line (<F>){
     # Initialization of hash of words and occurances.
     my %line;
 
+    # Checking if words in line have the minimal length
     for my $word (@words) {
         if (length($word) >= $minimal_length) {
             $line{$word}++;
             
-            push @unique_words, $word 
-            unless (in_array(
-                -array => \@unique_words,
-                -elem => $word)
-            );
+            # Word is put into hash of unique words
+            # word => number of occurances across all documents (lines)
+            $unique_words{$word}++;
         }
     }
 
@@ -68,9 +68,16 @@ for my $line (<F>){
     # Adding document class
     $line{_class_} = $class;
 
+    # Pushing line vector into array of documents
     push @documents, \%line;
+}
+
+# Remove words with occurance less than specified number of minimal occurances
+for my $word (keys %unique_words) {
+    delete $unique_words{$word} if ($unique_words{$word} < $minimal_occurance);
 }
 
 use Data::Dumper;
 
 print Dumper(\@documents);
+print Dumper(\%unique_words)
