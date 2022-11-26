@@ -11,11 +11,6 @@ our $local_weight = "tp";
 
 our @documents = ();
 our %unique_words;
-# TODO: Remake unique_word to be hash
-# word => total occurances
-
-
-# TODO: Add removing words with low occurance (use remove function for hash)
 
 # Parsing command line arguments to corresponding variables.
 GetOptions( "input-file|f=s" => \$input_file,
