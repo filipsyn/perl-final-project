@@ -24,6 +24,18 @@ die "Invalid local weight value provided.\n
 Please provide either 'tp' (default) or 'tf' value\n" 
 unless ($local_weight eq "tp" or $local_weight eq "tf");
 
+sub term_occurance_in_documents {
+    # Returns number of documents in which term
+    # (passed as an argument) occures
+    my $term = uc shift @_;
+    my $count = 0;
+    for my $doc (@documents) {
+        $count++ if (exists $doc->{$term});
+    }
+    
+    return $count;
+}
+
 # Opening input file
 open F, "$input_file" or die "Can't open file $input_file\n";
 
@@ -75,4 +87,6 @@ for my $word (keys %unique_words) {
 use Data::Dumper;
 
 print Dumper(\@documents);
-print Dumper(\%unique_words)
+#print Dumper(\%unique_words);
+#print term_occurance_in_documents("jo"), "\n";
+
