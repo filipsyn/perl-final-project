@@ -2,7 +2,7 @@ package Text;
 
 use Exporter;
 @ISA = qw (Exporter);
-@EXPORT = qw (strip_text in_array);
+@EXPORT = qw (strip_text in_array log10);
 
 
 sub strip_text {
