@@ -25,9 +25,8 @@ Please provide either 'tp' (default) or 'tf' value\n"
 unless ($local_weight eq "tp" or $local_weight eq "tf");
 
 sub term_occurance_in_documents {
-    # Returns number of documents in which term
-    # (passed as an argument) occures
-    my $term = uc shift @_;
+    # Returns number of documents in which searched term occures
+    my $term = uc shift;
     my $count = 0;
     for my $doc (@documents) {
         $count++ if (exists $doc->{$term});
@@ -84,9 +83,33 @@ for my $word (keys %unique_words) {
     delete $unique_words{$word} if ($unique_words{$word} < $minimal_occurance);
 }
 
+
+sub calculate_idf_for_term {
+    # Calculates Inverse Document Frequency factor for term passed as argument.
+    my $term = shift;
+    return log10( scalar(@documents) / term_occurance_in_documents($term));
+}
+
+sub sum_all_weights {
+    my $sum = 0;
+    for my $doc (@documents) {
+        for my $k (keys %{$doc}) {
+            $sum += ${doc}->{$k} unless ($k eq '_class_');
+        }
+    }
+    
+    return $sum;
+}
+
+sub normailze_term_weight {
+    # Returns normalized ``
+}
+
+
+
 use Data::Dumper;
+print sum_all_weights();
 
 print Dumper(\@documents);
 #print Dumper(\%unique_words);
-#print term_occurance_in_documents("jo"), "\n";
-
+#print calculate_idf("AHOJ"); 
