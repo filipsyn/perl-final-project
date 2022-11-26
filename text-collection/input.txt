@@ -4,3 +4,5 @@ P	Nazdar, jo dobry.
 N	Tyjo, uplne hrozny!
 P	<b>supr</b>
 N	Bizar Bizar Bizar
+P	Ahoj, je to supr.
+N	Jo, tak tohle se fakt nedá :(
