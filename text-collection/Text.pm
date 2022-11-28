@@ -1,11 +1,11 @@
 package Text;
 
 use Exporter;
-@ISA = qw (Exporter);
+@ISA    = qw (Exporter);
 @EXPORT = qw (strip_text in_array log10);
 
-
 sub strip_text {
+
     # Stripes HTML tags and non-letter characters from text.
     # Returns cleaned text in uppercase, to standardize the text.
 
@@ -22,6 +22,7 @@ sub strip_text {
 }
 
 sub in_array {
+
     # Checks if element is in array
     # Arguments
     #   -array
@@ -29,21 +30,22 @@ sub in_array {
     # Returns 1 if element is in array, 0 if element isn't present
 
     %args = @_;
-    
-    for my $e (@{$args{-array}}) {
-        return 1 if ($e eq $args{-elem});
+
+    for my $e ( @{ $args{-array} } ) {
+        return 1 if ( $e eq $args{-elem} );
     }
-    
+
     return 0;
 }
 
 sub log10 {
+
     # Subrutine to calculate decadic logarihm
-    # Perl's standard log() function uses e as a base 
+    # Perl's standard log() function uses e as a base.
     # This code is taken from Perl Func documentation
     # https://perldoc.perl.org/perlfunc#log
     my $n = shift;
-    return log($n)/log(10);
+    return log($n) / log(10);
 }
 
 1;
