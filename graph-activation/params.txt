@@ -1,0 +1,89 @@
+#NODES_TYPES 
+#keyword	type  
+
+nt		Person
+nt		Instance
+nt		Resource
+nt		Tag
+
+#LINK_TYPES
+#keyword	type name	type-of-reciprocal-link
+
+ltra		A2I		I2A
+ltra		I2RT		RT2I
+
+#NODES 
+#Keyword 	NodeID	NodeType	Importance
+n		A1	Person		1.0
+n		A2	Person		1.0
+n		A3	Person		1.0
+n		A4	Person		1.0
+n		I1	Instance	1.0
+n		I2	Instance	1.0
+n		I3	Instance	1.0
+n		I4	Instance	1.0
+n		I5	Instance	1.0
+n		I6	Instance	1.0
+n		I7	Instance	1.0
+n		I8	Instance	1.0
+n		R1	Resource	1.0
+n		R2	Resource	1.0
+n		R3	Resource	1.0
+n		R4	Resource	1.0
+n		T	Tag		1.0
+
+#LINKS 
+#keyword	Initial node	Terminal node	link type	Importance - is not implemented in Kosmos 1.0
+l		A1		I1		A2I
+l		A1		I2		A2I
+l		A2		I3		A2I
+l		A2		I4		A2I
+l		I1		R1		I2RT
+l		I1		T		I2RT
+l		I2		R2		I2RT
+l		I2		T		I2RT
+l		I3		R1		I2RT
+l		I3		T		I2RT
+l		I4		R2		I2RT
+l		I4		T		I2RT
+l		A3		I5		A2I
+l		A3		I6		A2I
+l		A4		I7		A2I
+l		A4		I8		A2I
+l		I5		R3		I2RT
+l		I5		T		I2RT
+l		I6		R4		I2RT
+l		I6		T		I2RT
+l		I7		R3		I2RT
+l		I7		T		I2RT
+l		I8		R4		I2RT
+l		I8		T		I2RT
+
+# INITIAL ACTIVATION
+#	The list of initially activated nodes:
+#keyword	NodeID	Activation_Level
+
+ia		A1	1
+
+# Link Weights
+# keyword	link_type	weight
+lw		A2I		0.8	
+lw		I2A		0.8
+lw		I2RT		0.8
+lw		RT2I		0.8
+
+#SAM-ALG-PARAMETERS
+
+Beta	0.5
+	
+IterationsNo	10
+
+Calibration	ConservationOfTotalActivation
+#Calibration	None
+#Calibration	ConservationOfInitialActivation
+
+a	1
+b	1
+c	0
+
+t	0
