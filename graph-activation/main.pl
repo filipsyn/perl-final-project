@@ -50,6 +50,21 @@ for my $line (<F>) {
     # Some values are separated by multiple tabs.
     my @conf = split /\t+/, $line;
 
-    print join ",", @conf;    # Debug printing
+
+    $beta = @conf[1] if (@conf[0] eq "Beta");
+    $iterations_limit = @conf[1] if (@conf[0] eq "IterationsNo");
+    $calibration_type = @conf[1] if (@conf[0] eq "Calibration");
+    
+
+
+    # print join ",", @conf;    # Debug printing
 }
+
+chomp $calibration_type;
+die "Incorrect type of calibration.\n
+Accepted values are: 'ConservationOfTotalActivation', 'None', 'ConservationOfInitialActivation'\n
+Current value is '$calibration_type"
+unless ($calibration_type eq 'ConservationOfTotalActivation' or
+        $calibration_type eq 'None' or
+        $calibration_type eq 'ConservationOfInitialActivation');
 
