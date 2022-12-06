@@ -4,7 +4,7 @@ use warnings;
 # Declaration of global structures
 ##################################
 
-# Nodes hash
+# Nodes hash of hash reference
 # Structure:
 #   id => {
 #       -type,
@@ -12,7 +12,7 @@ use warnings;
 #   }
 our %nodes;
 
-# Array of links hash
+# Array of hash references describing links between nodes
 # Structure:
 #   {
 #       -initial_node,
@@ -72,3 +72,4 @@ Current value is '$calibration_type"
 
 use Data::Dumper;
 print Dumper( \%nodes );
+
