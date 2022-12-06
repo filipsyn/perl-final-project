@@ -11,17 +11,6 @@ our $local_weight = "tp";
 our @documents = ();
 our %unique_words;
 
-# Parsing command line arguments to corresponding variables.
-GetOptions(
-    "input-file|f=s"        => \$input_file,
-    "minimal-length|l=i"    => \$minimal_length,
-    "minimal-occurance|n=i" => \$minimal_occurance,
-    "local-weight|w=s"      => \$local_weight
-) or die "Error in command line arguments\n";
-
-# Checking valid if local_weight has eiher "tp" or "tf" value
-die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n" unless ($local_weight eq "tp" or $local_weight eq "tf");
-
 
 # Stripes HTML tags and non-letter characters from text. Also uppercases the term to have standardized form of the terms.
 # Argument:
@@ -100,6 +89,7 @@ sub print_table {
 
 }
 
+
 # Calculates Inverse Document Frequency factor for term passed as argument.
 sub calculate_idf_for_term {
     my $term = shift;
@@ -125,6 +115,7 @@ sub sum_all_weights_in_document {
     return $sum;
 }
 
+
 # Calculates normalization factor for each term in document
 # Arguments
 #   -weight: Weight of specific term
@@ -138,6 +129,17 @@ sub get_normalization_factor {
 
     return $args{-weight} / $args{-sum};
 }
+
+# Parsing command line arguments to corresponding variables.
+GetOptions(
+    "input-file|f=s"        => \$input_file,
+    "minimal-length|l=i"    => \$minimal_length,
+    "minimal-occurance|n=i" => \$minimal_occurance,
+    "local-weight|w=s"      => \$local_weight
+) or die "Error in command line arguments\n";
+
+# Checking valid if local_weight has eiher "tp" or "tf" value
+die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n" unless ($local_weight eq "tp" or $local_weight eq "tf");
 
 open F, "$input_file" or die "Can't open file $input_file\n";
 
