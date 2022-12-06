@@ -24,6 +24,7 @@ GetOptions(
 # Checking valid if local_weight has eiher "tp" or "tf" value
 die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n" unless ($local_weight eq "tp" or $local_weight eq "tf");
 
+
 sub term_occurance_in_documents {
     # Returns number of documents in which searched term occures
     my $term = uc shift;
@@ -69,6 +70,46 @@ sub print_table {
     }
 
 }
+
+# Calculates Inverse Document Frequency factor for term passed as argument.
+sub calculate_idf_for_term {
+    my $term = shift;
+    return log10(scalar(@documents) / term_occurance_in_documents($term));
+}
+
+# Sums weight of all terms in document vector, that is passed
+# Arguments:
+#   - pointer to hash
+# Returns:
+#   - Sum of all values in passed hash
+sub sum_all_weights_in_document {
+    my $sum = 0;
+
+    # Retrieving pointer to hash passed as an argument and dereferencing it
+    my $arg = shift;
+    my %document = %{$arg};
+
+    for my $key (keys %document) {
+        $sum += $document{$key} unless ($key eq '_class_');
+    }
+
+    return $sum;
+}
+
+# Calculates normalization factor for each term in document
+# Arguments
+#   -weight: Weight of specific term
+#   -sum: Sum of all weight in document
+# Returns:
+#   - Normalization factor for passed values
+sub get_normalization_factor {
+    my %args = @_;
+
+    die "Incorrect arguments\n-weight and -sum expected\n" unless (exists($args{-weight}) and exists($args{-sum}));
+
+    return $args{-weight} / $args{-sum};
+}
+
 
 open F, "$input_file" or die "Can't open file $input_file\n";
 
@@ -118,45 +159,8 @@ for my $word (keys %unique_words) {
         if ($unique_words{$word} < $minimal_occurance);
 }
 
-# Calculates Inverse Document Frequency factor for term passed as argument.
-sub calculate_idf_for_term {
-    my $term = shift;
-    return log10(scalar(@documents) / term_occurance_in_documents($term));
-}
-
-# Sums weight of all terms in document vector, that is passed
-# Arguments:
-#   - pointer to hash
-# Returns:
-#   - Sum of all values in passed hash
-sub sum_all_weights_in_document {
-    my $sum = 0;
-
-    # Retrieving pointer to hash passed as an argument and dereferencing it
-    my $arg = shift;
-    my %document = %{$arg};
-
-    for my $key (keys %document) {
-        $sum += $document{$key} unless ($key eq '_class_');
-    }
-
-    return $sum;
-}
-
-# Calculates normalization factor for each term in document
-# Arguments
-#   -weight: Weight of specific term
-#   -sum: Sum of all weight in document
-# Returns:
-#   - Normalization factor for passed values
-sub get_normalization_factor {
-    my %args = @_;
-
-    die "Incorrect arguments\n-weight and -sum expected\n" unless (exists($args{-weight}) and exists($args{-sum}));
-
-    return $args{-weight} / $args{-sum};
-}
-
+# Calculate corresponding values for each term in each document.
+# Applies global weight and normalization factor.
 for my $doc (@documents) {
     my $line_sum = sum_all_weights_in_document($doc);
 
