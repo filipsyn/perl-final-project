@@ -23,12 +23,12 @@ GetOptions(
 die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n" unless ($local_weight eq "tp" or $local_weight eq "tf");
 
 
-sub strip_text {
-
-    # Stripes HTML tags and non-letter characters from text.
-    # Returns cleaned text in uppercase, to standardize the text.
-
-    # Takes "dirty" text as only argument
+# Stripes HTML tags and non-letter characters from text. Also uppercases the term to have standardized form of the terms.
+# Argument:
+#   - "dirty" text
+# Returns:
+#   - "cleaned" uppercase text
+sub clean_term {
     my $text = shift;
 
     # Striping out HTML tags
@@ -142,7 +142,7 @@ for my $line (<F>) {
     chomp $line;
     my ($class, $text) = split("\t", $line);
 
-    $text = strip_text($text);
+    $text = clean_term($text);
 
     # List of words in whole line
     my @words = split ' ', $text;
