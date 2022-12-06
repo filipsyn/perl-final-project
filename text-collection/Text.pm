@@ -14,7 +14,7 @@ sub strip_text {
     my $text = shift;
 
     # Striping out HTML tags
-    $text =~ s/(<([^>]+)>)//g;
+    $text =~ s/<([^>]+)>//g;
 
     # Removing any non-letter character
     $text =~ s/[^[:alpha:][:space:]]/ /g;
