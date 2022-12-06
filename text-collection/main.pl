@@ -1,5 +1,5 @@
 use strict;
-#use warnings;
+use warnings;
 use Getopt::Long;
 use lib '.';
 use Text;
