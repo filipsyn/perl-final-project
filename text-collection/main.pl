@@ -123,16 +123,26 @@ sub get_normalization_factor {
     return $args{-weight} / $args{-sum};
 }
 
+
+#   for my $doc (@documents) {
+#       while (my ($term, $value) = each %{$doc}) {
+#           print "$term\t $value\n" unless ($term eq '_class_');
+#       }
+#       print "--------------------\n";
+#   }
+
+for my $doc (@documents) {
+    my $line_sum = sum_all_weights_in_document($doc);
+
+    while (my ($term, $value) = each %{$doc}) {
+        next if ($term eq '_class_');
+        print "term $term old value: $value ";
+        $doc->{$term} = $value * calculate_idf_for_term($term) * get_normalization_factor(-weight => $value, -sum => $line_sum);
+        print "new: $value\n";
+    }
+}
+
 use Data::Dumper;
-
-print Dumper(\@documents);
-
+print Dumper(@documents);
 #print Dumper(\%unique_words);
-#print calculate_idf("AHOJ");
 
-   for my $line (@documents){
-       print sum_all_weights_in_document($line), "\n";
-   }
-
-
-print get_normalization_factor(-weight => 2, -sum => 6);
