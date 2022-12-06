@@ -35,6 +35,36 @@ sub term_occurance_in_documents {
     return $count;
 }
 
+sub print_table {
+    # Create table header
+    # Header is made out of words that pass the criteria specified by command-line arguments and _class_ column
+    my @header = sort keys %unique_words;
+    push @header, '_class_';
+    print join("\t", @header), "\n";
+
+
+    # Printing table with values
+    for my $doc (@documents) {
+        for my $column (@header) {
+
+            if ($column eq '_class_') {
+                print "$doc->{$column}";
+                next;
+            }
+
+            my $out;
+            if (exists $doc->{$column}) {
+                $out = sprintf('%.5f', $doc->{$column});
+            } else {
+                $out = 0;
+            }
+
+            print "$out\t";
+        }
+        print "\n";
+    }
+}
+
 open F, "$input_file" or die "Can't open file $input_file\n";
 
 # Processing input file
@@ -139,33 +169,5 @@ for my $doc (@documents) {
     }
 }
 
-my @header = sort keys %unique_words;
-push @header, '_class_';
-print join("\t", @header), "\n";
 
-
-# Printing table with values
-for my $doc (@documents) {
-    for my $column (@header) {
-
-        if ($column eq '_class_') {
-            print "$doc->{$column}";
-            next;
-        }
-
-        my $out;
-        if (exists $doc->{$column}) {
-           $out = sprintf('%.5f', $doc->{$column});
-        } else {
-            $out = 0;
-        }
-
-        print "$out\t";
-    }
-    print "\n";
-}
-
-use Data::Dumper;
-print Dumper(@documents);
-#print Dumper(\%unique_words);
-
+print_table();
