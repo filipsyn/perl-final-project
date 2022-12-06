@@ -25,7 +25,6 @@ GetOptions(
 die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n" unless ($local_weight eq "tp" or $local_weight eq "tf");
 
 sub term_occurance_in_documents {
-
     # Returns number of documents in which searched term occures
     my $term = uc shift;
     my $count = 0;
@@ -85,33 +84,55 @@ for my $word (keys %unique_words) {
         if ($unique_words{$word} < $minimal_occurance);
 }
 
+# Calculates Inverse Document Frequency factor for term passed as argument.
 sub calculate_idf_for_term {
-
-    # Calculates Inverse Document Frequency factor for term passed as argument.
     my $term = shift;
     return log10(scalar(@documents) / term_occurance_in_documents($term));
 }
 
-sub sum_all_weights {
+# Sums weight of all terms in document vector, that is passed
+# Arguments:
+#   - pointer to hash
+# Returns:
+#   - Sum of all values in passed hash
+sub sum_all_weights_in_document {
     my $sum = 0;
-    for my $doc (@documents) {
-        for my $k (keys %{$doc}) {
-            $sum += ${doc}->{$k} unless ($k eq '_class_');
-        }
+
+    # Retrieving pointer to hash passed as an argument and dereferencing it
+    my $arg = shift;
+    my %document = %{$arg};
+
+    for my $key (keys %document) {
+        $sum += $document{$key} unless ($key eq '_class_');
     }
 
     return $sum;
 }
 
-sub normailze_term_weight {
+# Calculates normalization factor for each term in document
+# Arguments
+#   -weight: Weight of specific term
+#   -sum: Sum of all weight in document
+# Returns:
+#   - Normalization factor for passed values
+sub get_normalization_factor {
+    my %args = @_;
 
-    # Returns normalized
+    die "Incorrect arguments\n-weight and -sum expected\n" unless (exists($args{-weight}) and exists($args{-sum}));
+
+    return $args{-weight} / $args{-sum};
 }
 
 use Data::Dumper;
-print sum_all_weights();
 
 print Dumper(\@documents);
 
 #print Dumper(\%unique_words);
 #print calculate_idf("AHOJ");
+
+   for my $line (@documents){
+       print sum_all_weights_in_document($line), "\n";
+   }
+
+
+print get_normalization_factor(-weight => 2, -sum => 6);
