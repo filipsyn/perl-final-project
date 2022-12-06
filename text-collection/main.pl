@@ -42,20 +42,24 @@ sub print_table {
     push @header, '_class_';
     print join("\t", @header), "\n";
 
-
     # Printing table with values
     for my $doc (@documents) {
         for my $column (@header) {
 
+            # Print class as is and continue to next iteration
             if ($column eq '_class_') {
                 print "$doc->{$column}";
                 next;
             }
 
             my $out;
+
+            # If value of this term is not zero, format it so it has up to 5 decimal places.
+            # This step ensures correct formatting of table.
             if (exists $doc->{$column}) {
                 $out = sprintf('%.5f', $doc->{$column});
-            } else {
+            }
+            else {
                 $out = 0;
             }
 
@@ -63,6 +67,7 @@ sub print_table {
         }
         print "\n";
     }
+
 }
 
 open F, "$input_file" or die "Can't open file $input_file\n";
@@ -160,6 +165,5 @@ for my $doc (@documents) {
         $doc->{$term} = $value * calculate_idf_for_term($term) * get_normalization_factor(-weight => $value, -sum => $line_sum);
     }
 }
-
 
 print_table();
