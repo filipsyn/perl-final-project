@@ -11,6 +11,9 @@ our $local_weight = "tp";
 our @documents = ();
 our %unique_words;
 
+#########################
+# FUNCTION DECLARAITONS #
+#########################
 
 # Stripes HTML tags and non-letter characters from text. Also uppercases the term to have standardized form of the terms.
 # Argument:
@@ -129,6 +132,11 @@ sub get_normalization_factor {
 
     return $args{-weight} / $args{-sum};
 }
+
+
+##############
+# MAIN LOGIC #
+##############
 
 # Parsing command line arguments to corresponding variables.
 GetOptions(
