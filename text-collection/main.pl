@@ -40,17 +40,21 @@ sub clean_term {
     return uc $text;
 }
 
+
+# Subrutine to calculate decadic logarihm
+# Perl's standard log() function uses e as a base.
+# This code is taken from Perl Func documentation
+# https://perldoc.perl.org/perlfunc#log
 sub log10 {
-    # Subrutine to calculate decadic logarihm
-    # Perl's standard log() function uses e as a base.
-    # This code is taken from Perl Func documentation
-    # https://perldoc.perl.org/perlfunc#log
     my $n = shift;
     return log($n) / log(10);
 }
 
+
+# Returns number of documents in which searched term occures
+# Arguments:
+#   - term which is searched across the documents
 sub term_occurance_in_documents {
-    # Returns number of documents in which searched term occures
     my $term = uc shift;
     my $count = 0;
     for my $doc (@documents) {
@@ -60,6 +64,7 @@ sub term_occurance_in_documents {
     return $count;
 }
 
+# Prints output in form of table
 sub print_table {
     # Create table header
     # Header is made out of words that pass the criteria specified by command-line arguments and _class_ column
@@ -133,7 +138,6 @@ sub get_normalization_factor {
 
     return $args{-weight} / $args{-sum};
 }
-
 
 open F, "$input_file" or die "Can't open file $input_file\n";
 
