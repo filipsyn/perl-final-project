@@ -1,5 +1,5 @@
 use strict;
-use warnings;
+#use warnings;
 use Getopt::Long;
 use lib '.';
 use Text;
@@ -62,7 +62,6 @@ for my $line (<F>) {
     }
 
     if ($local_weight eq 'tp') {
-
         # In case of local weight set to "Term Presence"
         # Turn values into "1" - occured, "0" - didn't occur
         for my $word (keys %line) {
@@ -136,10 +135,23 @@ for my $doc (@documents) {
 
     while (my ($term, $value) = each %{$doc}) {
         next if ($term eq '_class_');
-        print "term $term old value: $value ";
         $doc->{$term} = $value * calculate_idf_for_term($term) * get_normalization_factor(-weight => $value, -sum => $line_sum);
-        print "new: $value\n";
     }
+}
+
+my @header = sort keys %unique_words;
+push @header, '_class_';
+print join("\t", @header), "\n";
+
+for my $doc (@documents) {
+    for my $column (@header) {
+        unless (exists $doc->{$column}) {
+            print "0\t";
+            next;
+        }
+        print "$doc->{$column}\t";
+    }
+    print "\n";
 }
 
 use Data::Dumper;
