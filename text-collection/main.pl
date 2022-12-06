@@ -152,14 +152,6 @@ sub get_normalization_factor {
     return $args{-weight} / $args{-sum};
 }
 
-
-#   for my $doc (@documents) {
-#       while (my ($term, $value) = each %{$doc}) {
-#           print "$term\t $value\n" unless ($term eq '_class_');
-#       }
-#       print "--------------------\n";
-#   }
-
 for my $doc (@documents) {
     my $line_sum = sum_all_weights_in_document($doc);
 
