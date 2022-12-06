@@ -22,22 +22,6 @@ sub strip_text {
     return uc $text;
 }
 
-sub in_array {
-
-    # Checks if element is in array
-    # Arguments
-    #   -array
-    #   -elem: searched element
-    # Returns 1 if element is in array, 0 if element isn't present
-
-    %args = @_;
-
-    for my $e ( @{ $args{-array} } ) {
-        return 1 if ( $e eq $args{-elem} );
-    }
-
-    return 0;
-}
 
 sub log10 {
 
