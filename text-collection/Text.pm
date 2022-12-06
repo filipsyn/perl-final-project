@@ -1,4 +1,5 @@
 package Text;
+use locale;
 
 use Exporter;
 @ISA    = qw (Exporter);
@@ -16,7 +17,7 @@ sub strip_text {
     $text =~ s/(<([^>]+)>)//g;
 
     # Removing any non-letter character
-    $text =~ s/[^[:alpha:][:space:]]//g;
+    $text =~ s/[^[:alpha:][:space:]]/ /g;
 
     return uc $text;
 }
