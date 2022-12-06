@@ -1,8 +1,6 @@
 use strict;
 use warnings;
 use Getopt::Long;
-use lib '.';
-use Text;
 
 # Default values for arguments
 our $input_file = "input.txt";
