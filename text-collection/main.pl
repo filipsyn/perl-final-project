@@ -144,7 +144,7 @@ for my $line (<F>) {
     chomp $line;
     my ($class, $text) = split("\t", $line);
 
-    $text = Text::strip_text($text);
+    $text = strip_text($text);
 
     # List of words in whole line
     my @words = split ' ', $text;
