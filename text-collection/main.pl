@@ -143,13 +143,24 @@ my @header = sort keys %unique_words;
 push @header, '_class_';
 print join("\t", @header), "\n";
 
+
+# Printing table with values
 for my $doc (@documents) {
     for my $column (@header) {
-        unless (exists $doc->{$column}) {
-            print "0\t";
+
+        if ($column eq '_class_') {
+            print "$doc->{$column}";
             next;
         }
-        print "$doc->{$column}\t";
+
+        my $out;
+        if (exists $doc->{$column}) {
+           $out = sprintf('%.5f', $doc->{$column});
+        } else {
+            $out = 0;
+        }
+
+        print "$out\t";
     }
     print "\n";
 }
