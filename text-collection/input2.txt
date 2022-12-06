@@ -1,0 +1,5 @@
+P	good :-)
+P	very good.
+N	<b>not</b> good
+N	bad!!!
+N	very, very bad
