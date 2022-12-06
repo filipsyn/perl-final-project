@@ -2,25 +2,8 @@ package Text;
 use locale;
 
 use Exporter;
-@ISA    = qw (Exporter);
-@EXPORT = qw (strip_text in_array log10);
-
-sub strip_text {
-
-    # Stripes HTML tags and non-letter characters from text.
-    # Returns cleaned text in uppercase, to standardize the text.
-
-    # Takes "dirty" text as only argument
-    my $text = shift;
-
-    # Striping out HTML tags
-    $text =~ s/<([^>]+)>//g;
-
-    # Removing any non-letter character
-    $text =~ s/[^[:alpha:][:space:]]/ /g;
-
-    return uc $text;
-}
+@ISA = qw(Exporter);
+@EXPORT = qw(log10);
 
 
 sub log10 {

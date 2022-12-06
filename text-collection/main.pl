@@ -25,6 +25,23 @@ GetOptions(
 die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n" unless ($local_weight eq "tp" or $local_weight eq "tf");
 
 
+sub strip_text {
+
+    # Stripes HTML tags and non-letter characters from text.
+    # Returns cleaned text in uppercase, to standardize the text.
+
+    # Takes "dirty" text as only argument
+    my $text = shift;
+
+    # Striping out HTML tags
+    $text =~ s/<([^>]+)>//g;
+
+    # Removing any non-letter character
+    $text =~ s/[^[:alpha:][:space:]]/ /g;
+
+    return uc $text;
+}
+
 sub term_occurance_in_documents {
     # Returns number of documents in which searched term occures
     my $term = uc shift;
