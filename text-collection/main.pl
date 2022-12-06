@@ -125,7 +125,7 @@ sub sum_all_weights_in_document {
 #   -sum: Sum of all weight in document
 # Returns:
 #   - Normalization factor for passed values
-sub get_normalization_factor {
+sub calculate_normalization_factor {
     my %args = @_;
 
     die "Incorrect arguments\n-weight and -sum expected\n" unless (exists($args{-weight}) and exists($args{-sum}));
@@ -147,7 +147,8 @@ GetOptions(
 ) or die "Error in command line arguments\n";
 
 # Checking valid if local_weight has eiher "tp" or "tf" value
-die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n" unless ($local_weight eq "tp" or $local_weight eq "tf");
+die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n"
+    unless ($local_weight eq "tp" or $local_weight eq "tf");
 
 open F, "$input_file" or die "Can't open file $input_file\n";
 
@@ -204,7 +205,7 @@ for my $doc (@documents) {
 
     while (my ($term, $value) = each %{$doc}) {
         next if ($term eq '_class_');
-        $doc->{$term} = $value * calculate_idf_for_term($term) * get_normalization_factor(-weight => $value, -sum => $line_sum);
+        $doc->{$term} = $value * calculate_idf_for_term($term) * calculate_normalization_factor(-weight => $value, -sum => $line_sum);
     }
 }
 
