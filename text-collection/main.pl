@@ -160,7 +160,7 @@ for my $line (<F>) {
     $text = clean_term($text);
 
     # List of words in whole line
-    my @words = split ' ', $text;
+    my @words = split /\s+/, $text;
 
     # Initialization of hash of words and occurances.
     my %line;
