@@ -36,6 +36,10 @@ our $calibration_type;
 # Parameters a, b and c are used to calculate new values of nodes
 our %param = (a => 0, b => 0, c => 0);
 
+our %reciprocal_links;
+
+our %link_weights;
+
 # Main logic
 ############
 
@@ -61,6 +65,9 @@ for my $line (<F>) {
     push @links, { -initial_node => $conf[1], -terminal_node => $conf[2], -type => $conf[3] }
         if ($conf[0] eq 'l');
 
+    $reciprocal_links{$conf[1]} = $conf[2] if ($conf[0] eq 'ltra');
+    $link_weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
+
 
     #print join ",", @conf;    # Debug printing
 }
@@ -75,5 +82,7 @@ Current value is '$calibration_type"
 
 use Data::Dumper;
 #print Dumper(\%nodes);
-print Dumper(\@links);
+#print Dumper(\@links);
+print Dumper(\%reciprocal_links);
+print Dumper(\%link_weights);
 
