@@ -42,6 +42,8 @@ our %link_weights;
 
 our $threshold;
 
+our %initial_activation;
+
 # Main logic
 ############
 
@@ -70,6 +72,7 @@ for my $line (<F>) {
     $reciprocal_links{$conf[1]} = $conf[2] if ($conf[0] eq 'ltra');
     $link_weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
     $threshold = $conf[1] if ($conf[0] eq 't');
+    $initial_activation{$conf[1]} = $conf[2] if ($conf[0] eq 'ia');
 
 
     #print join ",", @conf;    # Debug printing
@@ -83,9 +86,11 @@ Current value is '$calibration_type"
         or $calibration_type eq 'None'
         or $calibration_type eq 'ConservationOfInitialActivation');
 
+
+
 use Data::Dumper;
 #print Dumper(\%nodes);
 #print Dumper(\@links);
 print Dumper(\%reciprocal_links);
 print Dumper(\%link_weights);
-
+print Dumper(\%initial_activation);
