@@ -96,9 +96,14 @@ for my $link (@links) {
     $$link{-reciprocal_weight} = $link_weights{$reciprocal_type};
 }
 
+# Assign initial activation values to corresponding nodes
+while (my ($node, $value) = each %initial_activation) {
+    $nodes{$node}->{-value} = $value;
+}
+
 use Data::Dumper;
-#print Dumper(\%nodes);
-print Dumper(\@links);
+print Dumper(\%nodes);
+#print Dumper(\@links);
 #print Dumper(\%reciprocal_links);
 #print Dumper(\%link_weights);
 #print Dumper(\%initial_activation);
