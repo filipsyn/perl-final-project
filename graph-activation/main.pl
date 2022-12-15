@@ -40,6 +40,8 @@ our %reciprocal_links;
 
 our %link_weights;
 
+our $threshold;
+
 # Main logic
 ############
 
@@ -67,6 +69,7 @@ for my $line (<F>) {
 
     $reciprocal_links{$conf[1]} = $conf[2] if ($conf[0] eq 'ltra');
     $link_weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
+    $threshold = $conf[1] if ($conf[0] eq 't');
 
 
     #print join ",", @conf;    # Debug printing
