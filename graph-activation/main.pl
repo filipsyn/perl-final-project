@@ -87,10 +87,18 @@ Current value is '$calibration_type"
         or $calibration_type eq 'ConservationOfInitialActivation');
 
 
+# Assign additional details about links like type of reciprocal link and link weights
+for my $link (@links) {
+    my $reciprocal_type = $reciprocal_links{$$link{-type}};
+
+    $$link{-reciprocal_type} = $reciprocal_type;
+    $$link{-weight} = $link_weights{$$link{-type}};
+    $$link{-reciprocal_weight} = $link_weights{$reciprocal_type};
+}
 
 use Data::Dumper;
 #print Dumper(\%nodes);
-#print Dumper(\@links);
-print Dumper(\%reciprocal_links);
-print Dumper(\%link_weights);
-print Dumper(\%initial_activation);
+print Dumper(\@links);
+#print Dumper(\%reciprocal_links);
+#print Dumper(\%link_weights);
+#print Dumper(\%initial_activation);
