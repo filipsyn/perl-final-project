@@ -120,13 +120,12 @@ for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
     print "\nIteration: $iteration of $iterations_limit\n\n";
     # Calculates signal values for each link
     for my $link (@links) {
-        # Calculate value sent from node to link
-        #TODO: Create subroutine to calculate out-degree of node
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
         my $initial_value = $nodes{$initial_node}->{-value};
         my $weight = $$link{-weight};
 
+        # Calculate value sent from node to link
         my $link_input = $initial_value * 1 / outdegree($initial_node) ** $beta;
         $nodes{$initial_node}->{-sent_total} += $link_input;
 
