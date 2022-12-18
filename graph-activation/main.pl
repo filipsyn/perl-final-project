@@ -75,6 +75,38 @@ sub is_reciprocal {
     return 0;
 }
 
+# Subroutine that sends activation signal from initial node to terminal node.
+# Subroutine finds
+# Arguments:
+#   -initial_node: ID of initial node (string)
+#   -terminal_node: ID of terminal node (string)
+#   -weight: Weight of link (real number)
+sub send_activation {
+    my %args = @_;
+
+    my $initial_value = $nodes{$args{-initial_node}}->{-value};
+
+    my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
+    my $link_output = $link_input * $args{-weight};
+
+    $nodes{$args{-initial_node}}->{-sent_total} += $link_input;
+    $nodes{$args{-terminal_node}}->{-received_total} += $link_output;
+
+    #print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
+}
+
+# Resets sum of sent and received activation values for node with node ID passed as a parameter
+sub reset_totals {
+    my $node_id = shift;
+
+    $nodes{$node_id}->{-sent_total} = 0;
+    $nodes{$node_id}->{-received_total} = 0;
+}
+
+for my $node_id (sort keys %nodes) {
+    print "$node_id\t";
+}
+
 # Main logic
 ############
 
@@ -122,37 +154,6 @@ while (my ($node, $value) = each %initial_activation) {
     $nodes{$node}->{-value} = $value;
 }
 
-# Subroutine that sends activation signal from initial node to terminal node.
-# Subroutine finds
-# Arguments:
-#   -initial_node: ID of initial node (string)
-#   -terminal_node: ID of terminal node (string)
-#   -weight: Weight of link (real number)
-sub send_activation {
-    my %args = @_;
-
-    my $initial_value = $nodes{$args{-initial_node}}->{-value};
-
-    my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
-    my $link_output = $link_input * $args{-weight};
-
-    $nodes{$args{-initial_node}}->{-sent_total} += $link_input;
-    $nodes{$args{-terminal_node}}->{-received_total} += $link_output;
-
-    #print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
-}
-
-# Resets sum of sent and received activation values for node with node ID passed as a parameter
-sub reset_totals {
-    my $node_id = shift;
-
-    $nodes{$node_id}->{-sent_total} = 0;
-    $nodes{$node_id}->{-received_total} = 0;
-}
-
-for my $node_id (sort keys %nodes) {
-    print "$node_id\t";
-}
 print "\n";
 
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
