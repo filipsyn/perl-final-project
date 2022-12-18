@@ -8,7 +8,9 @@ use warnings;
 # Structure:
 #   id => {
 #       -type,
-#       -value
+#       -value,
+#       -sent_total
+#       -received_total
 #   }
 our %nodes;
 
@@ -64,7 +66,7 @@ for my $line (<F>) {
     $beta = $conf[1] if ($conf[0] eq "Beta");
     $iterations_limit = $conf[1] if ($conf[0] eq "IterationsNo");
     $calibration_type = $conf[1] if ($conf[0] eq "Calibration");
-    $nodes{ $conf[1] } = { -type => $conf[2], -value => 0 }
+    $nodes{ $conf[1] } = { -type => $conf[2], -value => 0, -sent_total => 0, -received_total => 0 }
         if ($conf[0] eq 'n');
     push @links, { -initial_node => $conf[1], -terminal_node => $conf[2], -type => $conf[3] }
         if ($conf[0] eq 'l');
