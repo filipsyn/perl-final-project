@@ -171,7 +171,8 @@ for my $node_id (sort keys %nodes) {
 print "\n";
 
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
-    print "\nIteration: $iteration of $iterations_limit\n\n";
+    #print "\nIteration: $iteration of $iterations_limit\n\n";
+
     # Calculates signal values for each link
     for my $link (@links) {
         my $initial_node = $$link{-initial_node};
