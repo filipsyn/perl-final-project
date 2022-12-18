@@ -111,8 +111,9 @@ for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
         #TODO: Create subroutine to calculate out-degree of node
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
-        # my $sent_value =
-        print "$initial_node $terminal_node\n";
+        my $initial_value = $nodes{$initial_node}->{-value};
+
+        print "$initial_node($initial_value) $terminal_node\n";
 
         # Add value as "received" into link
 
