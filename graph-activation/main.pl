@@ -120,6 +120,8 @@ while (my ($node, $value) = each %initial_activation) {
 }
 
 for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
+    print "\nIteration: $iteration of $iterations_limit\n\n";
+    # Calculates signal values for each link
     for my $link (@links) {
         # Calculate value sent from node to link
         #TODO: Create subroutine to calculate out-degree of node
