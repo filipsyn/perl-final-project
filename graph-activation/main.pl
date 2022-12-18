@@ -128,7 +128,6 @@ while (my ($node, $value) = each %initial_activation) {
 #   -initial_node: ID of initial node (string)
 #   -terminal_node: ID of terminal node (string)
 #   -weight: Weight of link (real number)
-#   -reciprocal: "truthy" or "falsy" value if this signal is being sent on reciprocal link
 sub send_activation {
     my %args = @_;
 
@@ -176,7 +175,7 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
         $initial_value = $nodes{$initial_node}->{-value};
 
-        send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight, -reciprocal => 1);
+        send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
     }
 
 
