@@ -91,6 +91,9 @@ for my $line (<F>) {
     $link_weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
     $threshold = $conf[1] if ($conf[0] eq 't');
     $initial_activation{$conf[1]} = $conf[2] if ($conf[0] eq 'ia');
+    $param{a} = $conf[1] if ($conf[0] eq 'a');
+    $param{b} = $conf[1] if ($conf[0] eq 'b');
+    $param{c} = $conf[1] if ($conf[0] eq 'c');
 }
 
 chomp $calibration_type;
