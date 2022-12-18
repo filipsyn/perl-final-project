@@ -56,26 +56,11 @@ sub outdegree {
     my $count = 0;
 
     for my $link (@links) {
-        $count++ if ($$link{-initial_node} eq $node);
+        $count++ if ($$link{-initial_node} eq $node
+            or (($$link{-terminal_node} eq $node) and (is_reciprocal($reciprocal_links{$$link{-type}}))));
     }
 
     return $count;
-}
-
-# Calculates outdegree for massed node id
-sub indegree {
-    my $node_id = shift;
-    my $count = 0;
-
-    for my $link (@links) {
-        $count++ if ($$link{-terminal_node} eq $node_id)
-    }
-    return $count;
-}
-
-sub degree {
-    my $node_id = shift;
-    return outdegree($node_id) + indegree($node_id);
 }
 
 # Find if link type passed in as a parameter is reciprocal type of link
