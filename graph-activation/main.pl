@@ -162,12 +162,14 @@ for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
 
 
     # Iterate through all nodes
+    for my $node_id (sort keys %nodes) {
+        #print "Node ID:\t$node_id\n";
+        # Calculate new value of node
+        my $new_value = $param{a} * $nodes{$node_id}->{-value} + $param{b} * $nodes{$node_id}->{-received_total} + $param{c} * $nodes{$node_id}->{-sent_total};
+        #print "Node: $node_id(New value: $new_value)\nA: $param{a}\nInitial value: $nodes{$node_id}->{-value}\nB: $param{b}\nReceived total: $nodes{$node_id}->{-received_total}\nC: $param{c}\nSent total:$nodes{$node_id}->{-sent_total}\n\n\n\n";
+        #print "$node_id value $nodes{$node_id}->{-value} -> $new_value\n";
 
-    # Calculate sum of all signal values sent by the node
-
-    # Calculate sum of all signal values received by this node
-
-    # Calculate new value of node
+        $nodes{$node_id}->{-value} = sprintf "%.5f", $new_value;
 
     # TODO: Calibrate values of nodes according to set parameter
 
