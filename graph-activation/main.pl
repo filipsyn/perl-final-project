@@ -181,13 +181,10 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
 
         # Find link weight corresponding to reciprocal link
         $weight = $link_weights{$reciprocal_links{$$link{-type}}};
-
-        # Switch initial and terminal nodes
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
         $initial_value = $nodes{$initial_node}->{-value};
 
-        print "Reciprocal: ";
-        send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
+        send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight, -reciprocal => 1);
     }
 
 
@@ -199,21 +196,22 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
         #print "Node: $node_id(New value: $new_value)\nA: $param{a}\nInitial value: $nodes{$node_id}->{-value}\nB: $param{b}\nReceived total: $nodes{$node_id}->{-received_total}\nC: $param{c}\nSent total:$nodes{$node_id}->{-sent_total}\n\n\n\n";
         #print "$node_id value $nodes{$node_id}->{-value} -> $new_value\n";
 
-        $nodes{$node_id}->{-value} = sprintf "%.5f", $new_value;
+        $nodes{$node_id}->{-value} = $new_value;
 
-    # TODO: Calibrate values of nodes according to set parameter
+        # TODO: Calibrate values of nodes according to set parameter
 
         # Print values of nodes after iteration
         reset_totals($node_id);
-        print "$node_id -> $nodes{$node_id}->{-value}\n"
+        #print "$node_id -> $nodes{$node_id}->{-value}\n"
 
         #TODO: Check if values are over threshold
+        print sprintf("%.5f", $nodes{$node_id}->{-value}), "\t";
     }
-
+    print "\n";
 }
 
 use Data::Dumper;
-print Dumper(\%nodes);
+#print Dumper(\%nodes);
 #print Dumper(\@links);
 #print Dumper(\%reciprocal_links);
 #print Dumper(\%link_weights);
