@@ -142,7 +142,15 @@ sub send_activation {
 
     my $initial_value = $nodes{$args{-initial_node}}->{-value};
 
-    my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
+   #if (exists $args{-reciprocal}) {
+   #    $link_input = $initial_value * 1 / degree($args{-initial_node}) ** $beta;
+   #}
+   #else {
+   #    $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
+   #}
+    #TODO: Account for cases when link is not reciprocal
+    $link_input = $initial_value * 1 / degree($args{-initial_node}) ** $beta;
+
     $nodes{$args{-initial_node}}->{-sent_total} += $link_input;
 
     my $link_output = $link_input * $args{-weight};
