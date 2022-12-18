@@ -101,6 +101,37 @@ while (my ($node, $value) = each %initial_activation) {
     $nodes{$node}->{-value} = $value;
 }
 
+
+for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
+    # Iterate through all links
+    for my $link (@links) {
+        # Calculate value sent from node to link
+        #TODO: Create subroutine to calculate out-degree of node
+        my $initial_node = $$link{-initial_node};
+        my $terminal_node = $$link{-terminal_node};
+        # my $sent_value =
+        print "$initial_node $terminal_node\n";
+
+        # Add value as "received" into link
+
+        # Calculate signal decay and save it as a "sent" in link
+    }
+
+
+    # Iterate through all nodes
+
+        # Calculate sum of all signal values sent by the node
+
+        # Calculate sum of all signal values received by this node
+
+        # Calculate new value of node
+
+    # TODO: Calibrate values of nodes according to set parameter
+
+    # Print values of nodes after iteration
+
+}
+
 use Data::Dumper;
 print Dumper(\%nodes);
 #print Dumper(\@links);
