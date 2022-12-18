@@ -132,23 +132,12 @@ while (my ($node, $value) = each %initial_activation) {
 sub send_activation {
     my %args = @_;
 
-    # TODO: Accept param if activation is sent on reciprocal link. If so, then use indegree of initial node
-
     my $initial_value = $nodes{$args{-initial_node}}->{-value};
-    my $link_input = 0;
 
-   #if (exists $args{-reciprocal}) {
-   #    $link_input = $initial_value * 1 / degree($args{-initial_node}) ** $beta;
-   #}
-   #else {
-   #    $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
-   #}
-    #TODO: Account for cases when link is not reciprocal
-    $link_input = $initial_value * 1 / degree($args{-initial_node}) ** $beta;
+    my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
+    my $link_output = $link_input * $args{-weight};
 
     $nodes{$args{-initial_node}}->{-sent_total} += $link_input;
-
-    my $link_output = $link_input * $args{-weight};
     $nodes{$args{-terminal_node}}->{-received_total} += $link_output;
 
     #print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
