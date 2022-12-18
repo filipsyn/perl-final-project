@@ -142,7 +142,7 @@ sub send_activation {
     print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
 }
 
-for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
+for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
     print "\nIteration: $iteration of $iterations_limit\n\n";
     # Calculates signal values for each link
     for my $link (@links) {
