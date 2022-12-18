@@ -78,6 +78,18 @@ sub degree {
     return outdegree($node_id) + indegree($node_id);
 }
 
+# Find if link type passed in as a parameter is reciprocal type of link
+# Returns "truthy" or "falsy" value
+sub is_reciprocal {
+    my $link_type = shift;
+
+    for my $type (sort values %reciprocal_links) {
+        return 1 if ($link_type eq $type);
+    }
+
+    return 0;
+}
+
 # Main logic
 ############
 
