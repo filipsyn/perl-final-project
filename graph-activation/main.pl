@@ -167,6 +167,26 @@ while (my ($node, $value) = each %initial_activation) {
 
 print "\n";
 
+sub calibrate {
+
+}
+
+sub calibration_total_conservation {
+
+}
+
+sub sum_activation_in_iteration {
+    my $iteration_number = shift;
+    my $sum = 0;
+
+   for my $node_id (sort keys %nodes) {
+       #print "$node_id -> $results[$iteration_number]->{$node_id}\n";
+       $sum += $results[$iteration_number]->{$node_id} if (exists $results[$iteration_number]->{$node_id});
+   }
+
+    return $sum;
+}
+
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
     #print "\nIteration: $iteration of $iterations_limit\n\n";
 
@@ -190,8 +210,6 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
     }
 
-
-    # Iterate through all nodes
     for my $node_id (sort keys %nodes) {
         #print "Node ID:\t$node_id\n";
         # Calculate new value of node
@@ -201,15 +219,14 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
 
         $nodes{$node_id}->{-value} = $new_value;
 
-        # TODO: Calibrate values of nodes according to set parameter
         $results[$iteration]{$node_id} = $new_value;
-        # Print values of nodes after iteration
         reset_totals($node_id);
         #print "$node_id -> $nodes{$node_id}->{-value}\n"
 
-        #TODO: Check if values are over threshold
         print sprintf("%.5f", $nodes{$node_id}->{-value}), "\t";
     }
+    #TODO: Calibrate values of nodes according to set parameter
+    #TODO: Check if values are over threshold
     print "\n";
 }
 
@@ -221,3 +238,4 @@ use Data::Dumper;
 #print Dumper(\%initial_activation);
 print Dumper(\@results);
 
+#print sum_activation_in_iteration(3);
