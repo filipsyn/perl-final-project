@@ -103,9 +103,7 @@ while (my ($node, $value) = each %initial_activation) {
     $nodes{$node}->{-value} = $value;
 }
 
-
-for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
-    # Iterate through all links
+for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
     for my $link (@links) {
         # Calculate value sent from node to link
         #TODO: Create subroutine to calculate out-degree of node
