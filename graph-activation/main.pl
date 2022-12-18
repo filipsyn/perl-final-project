@@ -24,6 +24,16 @@ our %nodes;
 #   }
 our @links;
 
+# Array of reference to hash
+# Used to store value of nodes throughout iterations of script.
+# Each iteration is stored inside its own element (index 0 => initial activation, index 1 => first iteration, ...)
+# Structure:
+# [
+# node_id => -value
+# ]
+#
+our @results;
+
 # Beta parameter
 # Used for calculating value sent to other nodes
 our $beta;
@@ -152,6 +162,7 @@ Current value is '$calibration_type"
 # Assign initial activation values to corresponding nodes
 while (my ($node, $value) = each %initial_activation) {
     $nodes{$node}->{-value} = $value;
+    $results[0]{$node} = $value;
 }
 
 print "\n";
@@ -191,7 +202,7 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
         $nodes{$node_id}->{-value} = $new_value;
 
         # TODO: Calibrate values of nodes according to set parameter
-
+        $results[$iteration]{$node_id} = $new_value;
         # Print values of nodes after iteration
         reset_totals($node_id);
         #print "$node_id -> $nodes{$node_id}->{-value}\n"
@@ -208,3 +219,5 @@ use Data::Dumper;
 #print Dumper(\%reciprocal_links);
 #print Dumper(\%link_weights);
 #print Dumper(\%initial_activation);
+print Dumper(\@results);
+
