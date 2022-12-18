@@ -101,16 +101,6 @@ Current value is '$calibration_type"
         or $calibration_type eq 'None'
         or $calibration_type eq 'ConservationOfInitialActivation');
 
-
-# Assign additional details about links like type of reciprocal link and link weights
-for my $link (@links) {
-    my $reciprocal_type = $reciprocal_links{$$link{-type}};
-
-    $$link{-reciprocal_type} = $reciprocal_type;
-    $$link{-weight} = $link_weights{$$link{-type}};
-    $$link{-reciprocal_weight} = $link_weights{$reciprocal_type};
-}
-
 # Assign initial activation values to corresponding nodes
 while (my ($node, $value) = each %initial_activation) {
     $nodes{$node}->{-value} = $value;
@@ -149,7 +139,7 @@ for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
         my $initial_value = $nodes{$initial_node}->{-value};
-        my $weight = $$link{-weight};
+        my $weight = $link_weights{$$link{-type}};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
 
