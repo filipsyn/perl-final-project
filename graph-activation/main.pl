@@ -62,6 +62,17 @@ sub outdegree {
     return $count;
 }
 
+# Calculates outdegree for massed node id
+sub indegree {
+    my $node_id = shift;
+    my $count = 0;
+
+    for my $link (@links) {
+        $count++ if ($$link{-terminal_node} eq $node_id)
+    }
+    return $count;
+}
+
 # Main logic
 ############
 
