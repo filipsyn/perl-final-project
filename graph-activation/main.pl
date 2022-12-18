@@ -73,6 +73,11 @@ sub indegree {
     return $count;
 }
 
+sub degree {
+    my $node_id = shift;
+    return outdegree($node_id) + indegree($node_id);
+}
+
 # Main logic
 ############
 
