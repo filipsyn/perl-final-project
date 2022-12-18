@@ -135,7 +135,15 @@ sub send_activation {
     print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
 }
 
-for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
+# Resets sum of sent and received activation values for node with node ID passed as a parameter
+sub reset_totals {
+    my $node_id = shift;
+
+    $nodes{$node_id}->{-sent_total} = 0;
+    $nodes{$node_id}->{-received_total} = 0;
+}
+
+for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
     print "\nIteration: $iteration of $iterations_limit\n\n";
     # Calculates signal values for each link
     for my $link (@links) {
@@ -173,7 +181,12 @@ for (my $iteration = 0; $iteration < $iterations_limit; $iteration++) {
 
     # TODO: Calibrate values of nodes according to set parameter
 
-    # Print values of nodes after iteration
+        # Print values of nodes after iteration
+        reset_totals($node_id);
+        print "$node_id -> $nodes{$node_id}->{-value}\n"
+
+        #TODO: Check if values are over threshold
+    }
 
 }
 
