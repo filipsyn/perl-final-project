@@ -91,9 +91,6 @@ for my $line (<F>) {
     $link_weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
     $threshold = $conf[1] if ($conf[0] eq 't');
     $initial_activation{$conf[1]} = $conf[2] if ($conf[0] eq 'ia');
-
-
-    #print join ",", @conf;    # Debug printing
 }
 
 chomp $calibration_type;
