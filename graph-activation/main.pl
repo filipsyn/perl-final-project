@@ -116,6 +116,32 @@ while (my ($node, $value) = each %initial_activation) {
     $nodes{$node}->{-value} = $value;
 }
 
+# Subroutine that sends activation signal from initial node to terminal node.
+# Subroutine finds
+# Arguments:
+#   -initial_node: ID of initial node (string)
+#   -terminal_node: ID of terminal node (string)
+#   -weight: Weight of link (real number)
+sub send_activation {
+    my %args = @_;
+
+    # Jump out of function when outdegree of initial node is 0, because signal sent to this link would be 0.
+    # Sending 0 value doesnt make sense, because it wont matter when taking totals of sent and received signal values.
+    # Also when sending activation signal from node where outdegree is 0 (this makes sense when considering reciprocal
+    # relations), zero division would be occurring.
+    return if (outdegree($args{-initial_node}) == 0);
+
+    my $initial_value = $nodes{$args{-initial_node}}->{-value};
+
+    my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
+    $nodes{$args{-initial_node}}->{-sent_total} += $link_input;
+
+    my $link_output = $link_input * $args{-weight};
+    $nodes{$args{-terminal_node}}->{-received_total} += $link_output;
+
+    print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
+}
+
 for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
     print "\nIteration: $iteration of $iterations_limit\n\n";
     # Calculates signal values for each link
@@ -125,15 +151,20 @@ for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
         my $initial_value = $nodes{$initial_node}->{-value};
         my $weight = $$link{-weight};
 
-        # Calculate value sent from node to link
-        my $link_input = $initial_value * 1 / outdegree($initial_node) ** $beta;
-        $nodes{$initial_node}->{-sent_total} += $link_input;
+        send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
 
-        # Accounting for signal decay by factoring link weight
-        my $link_output = $link_input * $weight;
-        $nodes{$terminal_node}->{-received_total} += $link_output;
+        # Check if this link type is reciprocal
+        next unless (exists $reciprocal_links{$$link{-type}});
 
-        print "$initial_node($initial_value) sent $link_input to $terminal_node which received $link_output\n";
+        # Find link weight corresponding to reciprocal link
+        $weight = $link_weights{$reciprocal_links{$$link{-type}}};
+
+        # Switch initial and terminal nodes
+        ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
+        $initial_value = $nodes{$initial_node}->{-value};
+
+        print "Reciprocal: ";
+        send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
     }
 
 
