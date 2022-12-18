@@ -128,12 +128,13 @@ for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
         my $initial_value = $nodes{$initial_node}->{-value};
+        my $weight = $$link{-weight};
 
         my $link_input = $initial_value * 1 / outdegree($initial_node) ** $beta;
         $nodes{$initial_node}->{-sent_total} += $link_input;
 
         # Accounting for signal decay by factoring link weight
-        my $link_output = $link_input * $$link{-weight};
+        my $link_output = $link_input * $weight;
         $nodes{$terminal_node}->{-received_total} += $link_output;
 
         print "$initial_node($initial_value) sent $link_input to $terminal_node which received $link_output\n";
