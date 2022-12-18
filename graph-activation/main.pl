@@ -46,6 +46,22 @@ our $threshold;
 
 our %initial_activation;
 
+# Subroutines declarations
+##########################
+
+
+# Calculates outdegree for passed node id
+sub outdegree {
+    my $node = shift;
+    my $count = 0;
+
+    for my $link (@links) {
+        $count++ if ($$link{-initial_node} eq $node);
+    }
+
+    return $count;
+}
+
 # Main logic
 ############
 
@@ -121,11 +137,11 @@ for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
 
     # Iterate through all nodes
 
-        # Calculate sum of all signal values sent by the node
+    # Calculate sum of all signal values sent by the node
 
-        # Calculate sum of all signal values received by this node
+    # Calculate sum of all signal values received by this node
 
-        # Calculate new value of node
+    # Calculate new value of node
 
     # TODO: Calibrate values of nodes according to set parameter
 
