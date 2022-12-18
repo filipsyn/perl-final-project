@@ -165,6 +165,11 @@ sub reset_totals {
     $nodes{$node_id}->{-received_total} = 0;
 }
 
+for my $node_id (sort keys %nodes) {
+    print "$node_id\t";
+}
+print "\n";
+
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
     print "\nIteration: $iteration of $iterations_limit\n\n";
     # Calculates signal values for each link
