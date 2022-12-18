@@ -131,16 +131,14 @@ while (my ($node, $value) = each %initial_activation) {
 #   -initial_node: ID of initial node (string)
 #   -terminal_node: ID of terminal node (string)
 #   -weight: Weight of link (real number)
+#   -reciprocal: "truthy" or "falsy" value if this signal is being sent on reciprocal link
 sub send_activation {
     my %args = @_;
 
-    # Jump out of function when outdegree of initial node is 0, because signal sent to this link would be 0.
-    # Sending 0 value doesnt make sense, because it wont matter when taking totals of sent and received signal values.
-    # Also when sending activation signal from node where outdegree is 0 (this makes sense when considering reciprocal
-    # relations), zero division would be occurring.
-    return if (outdegree($args{-initial_node}) == 0);
+    # TODO: Accept param if activation is sent on reciprocal link. If so, then use indegree of initial node
 
     my $initial_value = $nodes{$args{-initial_node}}->{-value};
+    my $link_input = 0;
 
    #if (exists $args{-reciprocal}) {
    #    $link_input = $initial_value * 1 / degree($args{-initial_node}) ** $beta;
@@ -156,7 +154,7 @@ sub send_activation {
     my $link_output = $link_input * $args{-weight};
     $nodes{$args{-terminal_node}}->{-received_total} += $link_output;
 
-    print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
+    #print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
 }
 
 # Resets sum of sent and received activation values for node with node ID passed as a parameter
