@@ -174,7 +174,6 @@ if ($calibration_type eq 'ConservationOfTotalActivation') {
     }
 }
 
-print "\n";
 
 sub calibrate {
     my $iteration = shift;
