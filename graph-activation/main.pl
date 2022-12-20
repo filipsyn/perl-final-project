@@ -41,9 +41,6 @@ our $Beta;
 # Number of iterations that algorithm runs for
 our $Iterations_Limit;
 
-# Decides what type of calibration is used to normalize node values
-our $Calibration;
-
 # Parameters a, b and c are used to calculate new values of nodes
 our %Parameters = (a => 0, b => 0, c => 0);
 
@@ -62,6 +59,9 @@ our %Calibration_Types = (
     initial => 'ConservationOfInitialActivation',
     total   => 'ConservationOfTotalActivation'
 );
+
+# Decides what type of calibration is used to normalize node values
+our $Calibration = $Calibration_Types{none};
 
 our %Keywords = (
     -node_types         => 'nt',
