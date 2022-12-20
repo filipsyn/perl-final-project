@@ -165,11 +165,29 @@ while (my ($node, $value) = each %initial_activation) {
     $results[0]{$node} = $value;
 }
 
+# Assign ID of nodes upon which will be calibration values calculated
+if ($calibration_type eq 'ConservationOfInitialActivation') {
+    for my $node_id (keys %initial_activation) {
+        push @calibration_nodes, $node_id
+    }
+}
+
+if ($calibration_type eq 'ConservationOfTotalActivation') {
+    for my $node_id (keys %nodes) {
+        push @calibration_nodes, $node_id;
+    }
+}
+
 print "\n";
 
 sub calibrate {
+    my $iteration = shift;
     return if ($calibration_type eq 'None');
+    my $ratio = sum_activation_in_nodes($iteration - 1, @calibration_nodes) / sum_activation_in_nodes($iteration, @calibration_nodes);
 
+    for my $node_id (keys %nodes) {
+        $results[$iteration]->{$node_id} *= $ratio;
+    }
 }
 
 sub sum_activation_in_iteration {
@@ -241,6 +259,7 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
         print sprintf("%.5f", $nodes{$node_id}->{-value}), "\t";
     }
     #TODO: Calibrate values of nodes according to set parameter
+    calibrate($iteration);
     #TODO: Check if values are over threshold
     print "\n";
 }
@@ -254,3 +273,5 @@ use Data::Dumper;
 print Dumper(\@results);
 
 #print sum_activation_in_iteration(3);
+
+print Dumper(\@calibration_nodes);
