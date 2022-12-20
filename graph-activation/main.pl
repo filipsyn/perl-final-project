@@ -187,6 +187,24 @@ sub sum_activation_in_iteration {
     return $sum;
 }
 
+# Subroutine to calculate sum of values of specified nodes in specified iteration
+# Parameters:
+#   - iteration: First argument - specifies iteration in which are activation values searched
+#   - nodes: Rest of arguments - IDs of nodes which values should be summed
+sub sum_activation_in_nodes {
+    my $iteration = shift;
+    my @nodes = @_;
+    my $sum = 0;
+
+    for my $node (@nodes) {
+        $sum += $results[$iteration]->{$node} if ($results[$iteration]->{$node});
+        print "$node -> results[$iteration]->{$node}\n" if ($results[$iteration]->{$node});
+    }
+
+    print "Iteration $iteration sum $sum\n";
+    return $sum;
+}
+
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
     #print "\nIteration: $iteration of $iterations_limit\n\n";
 
