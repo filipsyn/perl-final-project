@@ -327,15 +327,6 @@ for my $line (<F>) {
     parse_parameters(@conf);
 }
 
-chomp $Calibration;
-die "Incorrect type of calibration.\n
-Accepted values are: 'ConservationOfTotalActivation', 'None', 'ConservationOfInitialActivation'\n
-Current value is '$Calibration"
-    unless ($Calibration eq $Calibration_Types{total}
-        or $Calibration eq $Calibration_Types{none}
-        or $Calibration eq $Calibration_Types{initial}
-    );
-
 # Assign initial activation values to corresponding nodes
 while (my ($node, $value) = each %Initial_Activation) {
     $Nodes{$node}->{-value} = $value;
