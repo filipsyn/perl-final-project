@@ -12,7 +12,7 @@ use warnings;
 #       -sent_total
 #       -received_total
 #   }
-our %nodes;
+our %Nodes;
 
 # Array of hash references describing links between nodes
 # Structure:
@@ -22,7 +22,7 @@ our %nodes;
 #       -type,
 #       -weight
 #   }
-our @links;
+our @Links;
 
 # Array of reference to hash
 # Used to store value of nodes throughout iterations of script.
@@ -32,33 +32,32 @@ our @links;
 # node_id => -value
 # ]
 #
-our @results;
+our @Results;
 
 # Beta parameter
 # Used for calculating value sent to other nodes
-our $beta;
+our $Beta;
 
 # Number of iterations that algorithm runs for
-our $iterations_limit;
+our $Iterations_Limit;
 
 # Decides what type of calibration is used to normalize node values
-our $calibration_type;
+our $Calibration_Type;
 
-# Parameters hash
 # Parameters a, b and c are used to calculate new values of nodes
-our %param = (a => 0, b => 0, c => 0);
+our %Parameters = (a => 0, b => 0, c => 0);
 
-our %reciprocal_links;
+our %Reciprocal_Links;
 
-our %link_weights;
+our %Link_Weights;
 
-our $threshold;
+our $Threshold;
 
-our %initial_activation;
+our %Initial_Activation;
 
-our @calibration_nodes;
+our @Calibration_Nodes;
 
-our %calibration_types = (
+our %Calibration_Types = (
     -none    => 'None',
     -initial => 'ConservationOfInitialActivation',
     -total   => 'ConservationOfTotalActivation'
@@ -73,7 +72,7 @@ our %calibration_types = (
 sub is_reciprocal {
     my $link_type = shift;
 
-    for my $type (sort values %reciprocal_links) {
+    for my $type (sort values %Reciprocal_Links) {
         return 1 if ($link_type eq $type);
     }
 
@@ -85,9 +84,9 @@ sub outdegree {
     my $node = shift;
     my $count = 0;
 
-    for my $link (@links) {
+    for my $link (@Links) {
         $count++ if ($$link{-initial_node} eq $node
-            or (($$link{-terminal_node} eq $node) and (is_reciprocal($reciprocal_links{$$link{-type}}))));
+            or (($$link{-terminal_node} eq $node) and (is_reciprocal($Reciprocal_Links{$$link{-type}}))));
     }
 
     return $count;
@@ -102,47 +101,46 @@ sub outdegree {
 sub send_activation {
     my %args = @_;
 
-    my $initial_value = $nodes{$args{-initial_node}}->{-value};
+    my $initial_value = $Nodes{$args{-initial_node}}->{-value};
 
-    my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $beta;
+    my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $Beta;
     my $link_output = $link_input * $args{-weight};
 
-    $nodes{$args{-initial_node}}->{-sent_total} += $link_input;
-    $nodes{$args{-terminal_node}}->{-received_total} += $link_output;
+    $Nodes{$args{-initial_node}}->{-sent_total} += $link_input;
+    $Nodes{$args{-terminal_node}}->{-received_total} += $link_output;
 }
 
 # Resets sum of sent and received activation values for node with node ID passed as a parameter
 sub reset_totals {
     my $node_id = shift;
 
-    $nodes{$node_id}->{-sent_total} = 0;
-    $nodes{$node_id}->{-received_total} = 0;
+    $Nodes{$node_id}->{-sent_total} = 0;
+    $Nodes{$node_id}->{-received_total} = 0;
 }
 
 sub init_calibration {
-    return if ($calibration_type eq $calibration_types{-none});
+    return if ($Calibration_Type eq $Calibration_Types{-none});
 
-    # Assign ID of nodes upon which will be calibration values calculated
-    if ($calibration_type eq $calibration_types{-initial}) {
-        for my $node_id (keys %initial_activation) {
-            push @calibration_nodes, $node_id
+    if ($Calibration_Type eq $Calibration_Types{-initial}) {
+        for my $node_id (keys %Initial_Activation) {
+            push @Calibration_Nodes, $node_id
         }
     }
 
-    if ($calibration_type eq $calibration_types{-total}) {
-        for my $node_id (keys %nodes) {
-            push @calibration_nodes, $node_id;
+    if ($Calibration_Type eq $Calibration_Types{-total}) {
+        for my $node_id (keys %Nodes) {
+            push @Calibration_Nodes, $node_id;
         }
     }
 }
 
 sub calibrate {
     my $iteration = shift;
-    return if ($calibration_type eq 'None');
-    my $ratio = sum_activation_in_nodes($iteration - 1, @calibration_nodes) / sum_activation_in_nodes($iteration, @calibration_nodes);
+    return if ($Calibration_Type eq 'None');
+    my $ratio = sum_activation_in_nodes($iteration - 1, @Calibration_Nodes) / sum_activation_in_nodes($iteration, @Calibration_Nodes);
 
-    for my $node_id (keys %nodes) {
-        $results[$iteration]->{$node_id} *= $ratio;
+    for my $node_id (keys %Nodes) {
+        $Results[$iteration]->{$node_id} *= $ratio;
     }
 }
 
@@ -157,7 +155,7 @@ sub sum_activation_in_nodes {
     my $sum = 0;
 
     for my $node (@nodes) {
-        $sum += $results[$iteration]->{$node} if ($results[$iteration]->{$node});
+        $sum += $Results[$iteration]->{$node} if ($Results[$iteration]->{$node});
     }
 
     return $sum;
@@ -165,18 +163,18 @@ sub sum_activation_in_nodes {
 
 sub print_table {
     # Construct table header
-    my @header = sort keys %nodes;
+    my @header = sort keys %Nodes;
     unshift @header, "Iter.";
     print join("\t", @header), "\n";
     shift @header;
 
-    for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
+    for (my $iteration = 0; $iteration <= $Iterations_Limit; $iteration++) {
         print "$iteration\t";
         for my $node_id (@header) {
             # Checking if printed value is initialized, so the interpreter won't complain that we're trying to access
             # uninitialized value
-            if (exists $results[$iteration]->{$node_id}) {
-                printf "%.5f\t", $results[$iteration]->{$node_id};
+            if (exists $Results[$iteration]->{$node_id}) {
+                printf "%.5f\t", $Results[$iteration]->{$node_id};
             }
             else {
                 printf "%.5f\t", 0;
@@ -189,8 +187,8 @@ sub print_table {
 sub check_threshold {
     my $iteration = shift;
 
-    for my $node_id (keys %nodes) {
-        $results[$iteration]->{$node_id} = 0 if ($results[$iteration]->{$node_id} < $threshold);
+    for my $node_id (keys %Nodes) {
+        $Results[$iteration]->{$node_id} = 0 if ($Results[$iteration]->{$node_id} < $Threshold);
     }
 }
 
@@ -211,67 +209,67 @@ for my $line (<F>) {
     my @conf = split /\s+/, $line;
 
     # Parsing configuration to prepared data structures
-    $beta = $conf[1] if ($conf[0] eq "Beta");
-    $iterations_limit = $conf[1] if ($conf[0] eq "IterationsNo");
-    $calibration_type = $conf[1] if ($conf[0] eq "Calibration");
-    $nodes{ $conf[1] } = { -type => $conf[2], -value => 0, -sent_total => 0, -received_total => 0 }
+    $Beta = $conf[1] if ($conf[0] eq "Beta");
+    $Iterations_Limit = $conf[1] if ($conf[0] eq "IterationsNo");
+    $Calibration_Type = $conf[1] if ($conf[0] eq "Calibration");
+    $Nodes{ $conf[1] } = { -type => $conf[2], -value => 0, -sent_total => 0, -received_total => 0 }
         if ($conf[0] eq 'n');
-    push @links, { -initial_node => $conf[1], -terminal_node => $conf[2], -type => $conf[3] }
+    push @Links, { -initial_node => $conf[1], -terminal_node => $conf[2], -type => $conf[3] }
         if ($conf[0] eq 'l');
 
-    $reciprocal_links{$conf[1]} = $conf[2] if ($conf[0] eq 'ltra');
-    $link_weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
-    $threshold = $conf[1] if ($conf[0] eq 't');
-    $initial_activation{$conf[1]} = $conf[2] if ($conf[0] eq 'ia');
-    $param{a} = $conf[1] if ($conf[0] eq 'a');
-    $param{b} = $conf[1] if ($conf[0] eq 'b');
-    $param{c} = $conf[1] if ($conf[0] eq 'c');
+    $Reciprocal_Links{$conf[1]} = $conf[2] if ($conf[0] eq 'ltra');
+    $Link_Weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
+    $Threshold = $conf[1] if ($conf[0] eq 't');
+    $Initial_Activation{$conf[1]} = $conf[2] if ($conf[0] eq 'ia');
+    $Parameters{a} = $conf[1] if ($conf[0] eq 'a');
+    $Parameters{b} = $conf[1] if ($conf[0] eq 'b');
+    $Parameters{c} = $conf[1] if ($conf[0] eq 'c');
 }
 
-chomp $calibration_type;
+chomp $Calibration_Type;
 die "Incorrect type of calibration.\n
 Accepted values are: 'ConservationOfTotalActivation', 'None', 'ConservationOfInitialActivation'\n
-Current value is '$calibration_type"
-    unless ($calibration_type eq $calibration_types{-total}
-        or $calibration_type eq $calibration_types{-none}
-        or $calibration_type eq $calibration_types{-initial}
+Current value is '$Calibration_Type"
+    unless ($Calibration_Type eq $Calibration_Types{-total}
+        or $Calibration_Type eq $Calibration_Types{-none}
+        or $Calibration_Type eq $Calibration_Types{-initial}
     );
 
 # Assign initial activation values to corresponding nodes
-while (my ($node, $value) = each %initial_activation) {
-    $nodes{$node}->{-value} = $value;
-    $results[0]{$node} = $value;
+while (my ($node, $value) = each %Initial_Activation) {
+    $Nodes{$node}->{-value} = $value;
+    $Results[0]{$node} = $value;
 }
 
 init_calibration();
 
-for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
+for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
 
-    for my $link (@links) {
+    for my $link (@Links) {
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
-        my $initial_value = $nodes{$initial_node}->{-value};
-        my $weight = $link_weights{$$link{-type}};
+        my $initial_value = $Nodes{$initial_node}->{-value};
+        my $weight = $Link_Weights{$$link{-type}};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
 
         # Check if this link type is reciprocal
-        next unless (exists $reciprocal_links{$$link{-type}});
+        next unless (exists $Reciprocal_Links{$$link{-type}});
 
         # Find link weight corresponding to reciprocal link
-        $weight = $link_weights{$reciprocal_links{$$link{-type}}};
+        $weight = $Link_Weights{$Reciprocal_Links{$$link{-type}}};
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
-        $initial_value = $nodes{$initial_node}->{-value};
+        $initial_value = $Nodes{$initial_node}->{-value};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
     }
 
-    for my $node_id (sort keys %nodes) {
-        my $new_value = $param{a} * $nodes{$node_id}->{-value} + $param{b} * $nodes{$node_id}->{-received_total} + $param{c} * $nodes{$node_id}->{-sent_total};
+    for my $node_id (sort keys %Nodes) {
+        my $new_value = $Parameters{a} * $Nodes{$node_id}->{-value} + $Parameters{b} * $Nodes{$node_id}->{-received_total} + $Parameters{c} * $Nodes{$node_id}->{-sent_total};
 
-        $nodes{$node_id}->{-value} = $new_value;
+        $Nodes{$node_id}->{-value} = $new_value;
 
-        $results[$iteration]{$node_id} = $new_value;
+        $Results[$iteration]{$node_id} = $new_value;
         reset_totals($node_id);
     }
 
