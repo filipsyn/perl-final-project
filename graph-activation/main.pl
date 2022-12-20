@@ -103,8 +103,6 @@ sub send_activation {
 
     $nodes{$args{-initial_node}}->{-sent_total} += $link_input;
     $nodes{$args{-terminal_node}}->{-received_total} += $link_output;
-
-    #print "$args{-initial_node}($initial_value) sent $link_input to $args{-terminal_node} which received $link_output\n";
 }
 
 # Resets sum of sent and received activation values for node with node ID passed as a parameter
@@ -197,7 +195,6 @@ sub sum_activation_in_iteration {
     my $sum = 0;
 
     for my $node_id (sort keys %nodes) {
-        #print "$node_id -> $results[$iteration_number]->{$node_id}\n";
         $sum += $results[$iteration_number]->{$node_id} if (exists $results[$iteration_number]->{$node_id});
     }
 
@@ -215,17 +212,13 @@ sub sum_activation_in_nodes {
 
     for my $node (@nodes) {
         $sum += $results[$iteration]->{$node} if ($results[$iteration]->{$node});
-        print "$node -> results[$iteration]->{$node}\n" if ($results[$iteration]->{$node});
     }
 
-    print "Iteration $iteration sum $sum\n";
     return $sum;
 }
 
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
-    #print "\nIteration: $iteration of $iterations_limit\n\n";
 
-    # Calculates signal values for each link
     for my $link (@links) {
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
@@ -246,21 +239,15 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
     }
 
     for my $node_id (sort keys %nodes) {
-        #print "Node ID:\t$node_id\n";
-        # Calculate new value of node
         my $new_value = $param{a} * $nodes{$node_id}->{-value} + $param{b} * $nodes{$node_id}->{-received_total} + $param{c} * $nodes{$node_id}->{-sent_total};
-        #print "Node: $node_id(New value: $new_value)\nA: $param{a}\nInitial value: $nodes{$node_id}->{-value}\nB: $param{b}\nReceived total: $nodes{$node_id}->{-received_total}\nC: $param{c}\nSent total:$nodes{$node_id}->{-sent_total}\n\n\n\n";
-        #print "$node_id value $nodes{$node_id}->{-value} -> $new_value\n";
 
         $nodes{$node_id}->{-value} = $new_value;
 
         $results[$iteration]{$node_id} = $new_value;
         reset_totals($node_id);
-        #print "$node_id -> $nodes{$node_id}->{-value}\n"
 
         print sprintf("%.5f", $nodes{$node_id}->{-value}), "\t";
     }
-    #TODO: Calibrate values of nodes according to set parameter
     calibrate($iteration);
     #TODO: Check if values are over threshold
     print "\n";
@@ -275,5 +262,6 @@ use Data::Dumper;
 print Dumper(\@results);
 
 #print sum_activation_in_iteration(3);
+#print sum_activation_in_nodes(2, 'A1', 'T');
 
 print Dumper(\@calibration_nodes);
