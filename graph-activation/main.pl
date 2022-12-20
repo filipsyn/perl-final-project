@@ -113,6 +113,57 @@ sub reset_totals {
     $nodes{$node_id}->{-received_total} = 0;
 }
 
+sub calibrate {
+    my $iteration = shift;
+    return if ($calibration_type eq 'None');
+    my $ratio = sum_activation_in_nodes($iteration - 1, @calibration_nodes) / sum_activation_in_nodes($iteration, @calibration_nodes);
+
+    for my $node_id (keys %nodes) {
+        $results[$iteration]->{$node_id} *= $ratio;
+    }
+}
+
+
+# Subroutine to calculate sum of values of specified nodes in specified iteration
+# Parameters:
+#   - iteration: First argument - specifies iteration in which are activation values searched
+#   - nodes: Rest of arguments - IDs of nodes which values should be summed
+sub sum_activation_in_nodes {
+    my $iteration = shift;
+    my @nodes = @_;
+    my $sum = 0;
+
+    for my $node (@nodes) {
+        $sum += $results[$iteration]->{$node} if ($results[$iteration]->{$node});
+    }
+
+    return $sum;
+}
+
+sub print_table {
+    # Construct table header
+    my @header = sort keys %nodes;
+    unshift @header, "Iter.";
+    print join("\t", @header), "\n";
+    shift @header;
+
+    for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
+        print "$iteration\t";
+        for my $node_id (@header) {
+            # Checking if printed value is initialized, so the interpreter won't complain that we're trying to access
+            # uninitialized value
+            if (exists $results[$iteration]->{$node_id}) {
+                printf "%.5f\t", $results[$iteration]->{$node_id};
+            }
+            else {
+                printf "%.5f\t", 0;
+            }
+        }
+        print "\n";
+    }
+}
+
+
 # Main logic
 ############
 
@@ -171,57 +222,6 @@ if ($calibration_type eq 'ConservationOfInitialActivation') {
 if ($calibration_type eq 'ConservationOfTotalActivation') {
     for my $node_id (keys %nodes) {
         push @calibration_nodes, $node_id;
-    }
-}
-
-
-sub calibrate {
-    my $iteration = shift;
-    return if ($calibration_type eq 'None');
-    my $ratio = sum_activation_in_nodes($iteration - 1, @calibration_nodes) / sum_activation_in_nodes($iteration, @calibration_nodes);
-
-    for my $node_id (keys %nodes) {
-        $results[$iteration]->{$node_id} *= $ratio;
-    }
-}
-
-
-# Subroutine to calculate sum of values of specified nodes in specified iteration
-# Parameters:
-#   - iteration: First argument - specifies iteration in which are activation values searched
-#   - nodes: Rest of arguments - IDs of nodes which values should be summed
-sub sum_activation_in_nodes {
-    my $iteration = shift;
-    my @nodes = @_;
-    my $sum = 0;
-
-    for my $node (@nodes) {
-        $sum += $results[$iteration]->{$node} if ($results[$iteration]->{$node});
-    }
-
-    return $sum;
-}
-
-sub print_table {
-    # Construct table header
-    my @header = sort keys %nodes;
-    unshift @header, "Iter.";
-    print join("\t", @header), "\n";
-    shift @header;
-
-    for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
-        print "$iteration\t";
-        for my $node_id (@header) {
-            # Checking if printed value is initialized, so the interpreter won't complain that we're trying to access
-            # uninitialized value
-            if (exists $results[$iteration]->{$node_id}) {
-                printf "%.5f\t", $results[$iteration]->{$node_id};
-            }
-            else {
-                printf "%.5f\t", 0;
-            }
-        }
-        print "\n";
     }
 }
 
