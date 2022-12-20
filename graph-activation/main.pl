@@ -113,10 +113,6 @@ sub reset_totals {
     $nodes{$node_id}->{-received_total} = 0;
 }
 
-for my $node_id (sort keys %nodes) {
-    print "$node_id\t";
-}
-
 # Main logic
 ############
 
@@ -190,16 +186,6 @@ sub calibrate {
     }
 }
 
-sub sum_activation_in_iteration {
-    my $iteration_number = shift;
-    my $sum = 0;
-
-    for my $node_id (sort keys %nodes) {
-        $sum += $results[$iteration_number]->{$node_id} if (exists $results[$iteration_number]->{$node_id});
-    }
-
-    return $sum;
-}
 
 # Subroutine to calculate sum of values of specified nodes in specified iteration
 # Parameters:
@@ -268,12 +254,10 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
 
         $results[$iteration]{$node_id} = $new_value;
         reset_totals($node_id);
-
-        print sprintf("%.5f", $nodes{$node_id}->{-value}), "\t";
     }
+
     calibrate($iteration);
     #TODO: Check if values are over threshold
-    print "\n";
 }
 
 use Data::Dumper;
