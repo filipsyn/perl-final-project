@@ -247,7 +247,14 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-initial_activation}) {
+        unless (exists $Nodes{$parameters[0]}) {
+            die "trying to initialize node " . $parameters[0] . " which doesn't exist.\n";
+        }
+
         $Initial_Activation{$parameters[0]} = $parameters[1];
+        $Nodes{$parameters[0]}->{-value} = $parameters[1];
+        $Results[0]{$parameters[0]} = $parameters[1];
+
         return;
     }
 
