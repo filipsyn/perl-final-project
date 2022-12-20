@@ -229,6 +229,14 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-link}) {
+        unless (exists $Nodes{$parameters[0]} and exists $Nodes{$parameters[1]}) {
+            die "Trying to use invalid node in link - either " . $parameters[0] . " or " . $parameters[1] . " node does not exist.\n";
+        }
+
+        unless (exists $Reciprocal_Links{$parameters[2]}) {
+            die "Trying to parse link with incorrect link type " . $parameters[2] . "\n"
+        };
+
         push @Links, {
             -initial_node  => $parameters[0],
             -terminal_node => $parameters[1],
