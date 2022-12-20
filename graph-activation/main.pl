@@ -56,6 +56,8 @@ our $threshold;
 
 our %initial_activation;
 
+our @calibration_nodes;
+
 # Subroutines declarations
 ##########################
 
