@@ -179,10 +179,10 @@ sub sum_activation_in_iteration {
     my $iteration_number = shift;
     my $sum = 0;
 
-   for my $node_id (sort keys %nodes) {
-       #print "$node_id -> $results[$iteration_number]->{$node_id}\n";
-       $sum += $results[$iteration_number]->{$node_id} if (exists $results[$iteration_number]->{$node_id});
-   }
+    for my $node_id (sort keys %nodes) {
+        #print "$node_id -> $results[$iteration_number]->{$node_id}\n";
+        $sum += $results[$iteration_number]->{$node_id} if (exists $results[$iteration_number]->{$node_id});
+    }
 
     return $sum;
 }
