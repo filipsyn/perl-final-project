@@ -12,7 +12,7 @@ use warnings;
 #       -sent_total
 #       -received_total
 #   }
-our %Nodes;
+our %Node;
 
 # Array of hash references describing links between nodes
 # Structure:
@@ -42,7 +42,7 @@ our $Beta;
 our $Iterations_Limit;
 
 # Parameters a, b and c are used to calculate new values of nodes
-our %Parameters = (a => 0, b => 0, c => 0);
+our %Parameter = (a => 0, b => 0, c => 0);
 
 our %Reciprocal_Links;
 
@@ -118,21 +118,21 @@ sub outdegree {
 sub send_activation {
     my %args = @_;
 
-    my $initial_value = $Nodes{$args{-initial_node}}->{-value};
+    my $initial_value = $Node{$args{-initial_node}}->{-value};
 
     my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $Beta;
     my $link_output = $link_input * $args{-weight};
 
-    $Nodes{$args{-initial_node}}->{-sent_total} += $link_input;
-    $Nodes{$args{-terminal_node}}->{-received_total} += $link_output;
+    $Node{$args{-initial_node}}->{-sent_total} += $link_input;
+    $Node{$args{-terminal_node}}->{-received_total} += $link_output;
 }
 
 # Resets sum of sent and received activation values for node with node ID passed as a parameter
 sub reset_totals {
     my $node_id = shift;
 
-    $Nodes{$node_id}->{-sent_total} = 0;
-    $Nodes{$node_id}->{-received_total} = 0;
+    $Node{$node_id}->{-sent_total} = 0;
+    $Node{$node_id}->{-received_total} = 0;
 }
 
 sub init_calibration {
@@ -145,7 +145,7 @@ sub init_calibration {
     }
 
     if ($Calibration eq $Calibration_Types{total}) {
-        for my $node_id (keys %Nodes) {
+        for my $node_id (keys %Node) {
             push @Calibration_Nodes, $node_id;
         }
     }
@@ -157,7 +157,7 @@ sub calibrate {
     my $iteration = shift;
     my $ratio = sum_activation_in_nodes($iteration - 1, @Calibration_Nodes) / sum_activation_in_nodes($iteration, @Calibration_Nodes);
 
-    for my $node_id (keys %Nodes) {
+    for my $node_id (keys %Node) {
         $Results[$iteration]->{$node_id} *= $ratio;
     }
 }
@@ -180,7 +180,7 @@ sub sum_activation_in_nodes {
 
 sub print_table {
     # Construct table header
-    my @header = sort keys %Nodes;
+    my @header = sort keys %Node;
     unshift @header, "Iter.";
     print join("\t", @header), "\n";
     shift @header;
@@ -204,7 +204,7 @@ sub print_table {
 sub check_threshold {
     my $iteration = shift;
 
-    for my $node_id (keys %Nodes) {
+    for my $node_id (keys %Node) {
         $Results[$iteration]->{$node_id} = 0 if ($Results[$iteration]->{$node_id} < $Threshold);
     }
 }
@@ -219,7 +219,7 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-node}) {
-        $Nodes{$parameters[0]} = {
+        $Node{$parameters[0]} = {
             -type           => $parameters[1],
             -value          => 0,
             -sent_total     => 0,
@@ -229,7 +229,7 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-link}) {
-        unless (exists $Nodes{$parameters[0]} and exists $Nodes{$parameters[1]}) {
+        unless (exists $Node{$parameters[0]} and exists $Node{$parameters[1]}) {
             die "Trying to use invalid node in link\n\tEither " . $parameters[0] . " or " . $parameters[1] . " node does not exist.\n";
         }
 
@@ -247,12 +247,12 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-initial_activation}) {
-        unless (exists $Nodes{$parameters[0]}) {
+        unless (exists $Node{$parameters[0]}) {
             die "trying to initialize node " . $parameters[0] . " which doesn't exist.\n";
         }
 
         $Initial_Activation{$parameters[0]} = $parameters[1];
-        $Nodes{$parameters[0]}->{-value} = $parameters[1];
+        $Node{$parameters[0]}->{-value} = $parameters[1];
         $Results[0]{$parameters[0]} = $parameters[1];
 
         return;
@@ -284,17 +284,17 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-a}) {
-        $Parameters{a} = $parameters[0];
+        $Parameter{a} = $parameters[0];
         return;
     }
 
     if ($keyword eq $Keywords{-b}) {
-        $Parameters{b} = $parameters[0];
+        $Parameter{b} = $parameters[0];
         return;
     }
 
     if ($keyword eq $Keywords{-c}) {
-        $Parameters{c} = $parameters[0];
+        $Parameter{c} = $parameters[0];
         return;
     }
 
@@ -334,7 +334,7 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
     for my $link (@Links) {
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
-        my $initial_value = $Nodes{$initial_node}->{-value};
+        my $initial_value = $Node{$initial_node}->{-value};
         my $weight = $Link_Weights{$$link{-type}};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
@@ -345,16 +345,16 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
         # Find link weight corresponding to reciprocal link
         $weight = $Link_Weights{$Reciprocal_Links{$$link{-type}}};
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
-        $initial_value = $Nodes{$initial_node}->{-value};
+        $initial_value = $Node{$initial_node}->{-value};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
     }
 
     # Calculate new values of nodes
-    for my $node_id (sort keys %Nodes) {
-        my $new_value = $Parameters{a} * $Nodes{$node_id}->{-value} + $Parameters{b} * $Nodes{$node_id}->{-received_total} + $Parameters{c} * $Nodes{$node_id}->{-sent_total};
+    for my $node_id (sort keys %Node) {
+        my $new_value = $Parameter{a} * $Node{$node_id}->{-value} + $Parameter{b} * $Node{$node_id}->{-received_total} + $Parameter{c} * $Node{$node_id}->{-sent_total};
 
-        $Nodes{$node_id}->{-value} = $new_value;
+        $Node{$node_id}->{-value} = $new_value;
         $Results[$iteration]{$node_id} = $new_value;
 
         reset_totals($node_id);
