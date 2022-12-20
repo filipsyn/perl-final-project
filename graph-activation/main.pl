@@ -42,7 +42,7 @@ our $Beta;
 our $Iterations_Limit;
 
 # Decides what type of calibration is used to normalize node values
-our $Calibration_Type;
+our $Calibration;
 
 # Parameters a, b and c are used to calculate new values of nodes
 our %Parameters = (a => 0, b => 0, c => 0);
@@ -119,15 +119,15 @@ sub reset_totals {
 }
 
 sub init_calibration {
-    return if ($Calibration_Type eq $Calibration_Types{-none});
+    return if ($Calibration eq $Calibration_Types{-none});
 
-    if ($Calibration_Type eq $Calibration_Types{-initial}) {
+    if ($Calibration eq $Calibration_Types{-initial}) {
         for my $node_id (keys %Initial_Activation) {
             push @Calibration_Nodes, $node_id
         }
     }
 
-    if ($Calibration_Type eq $Calibration_Types{-total}) {
+    if ($Calibration eq $Calibration_Types{-total}) {
         for my $node_id (keys %Nodes) {
             push @Calibration_Nodes, $node_id;
         }
@@ -136,7 +136,7 @@ sub init_calibration {
 
 sub calibrate {
     my $iteration = shift;
-    return if ($Calibration_Type eq 'None');
+    return if ($Calibration eq 'None');
     my $ratio = sum_activation_in_nodes($iteration - 1, @Calibration_Nodes) / sum_activation_in_nodes($iteration, @Calibration_Nodes);
 
     for my $node_id (keys %Nodes) {
@@ -211,7 +211,7 @@ for my $line (<F>) {
     # Parsing configuration to prepared data structures
     $Beta = $conf[1] if ($conf[0] eq "Beta");
     $Iterations_Limit = $conf[1] if ($conf[0] eq "IterationsNo");
-    $Calibration_Type = $conf[1] if ($conf[0] eq "Calibration");
+    $Calibration = $conf[1] if ($conf[0] eq "Calibration");
     $Nodes{ $conf[1] } = { -type => $conf[2], -value => 0, -sent_total => 0, -received_total => 0 }
         if ($conf[0] eq 'n');
     push @Links, { -initial_node => $conf[1], -terminal_node => $conf[2], -type => $conf[3] }
@@ -226,13 +226,13 @@ for my $line (<F>) {
     $Parameters{c} = $conf[1] if ($conf[0] eq 'c');
 }
 
-chomp $Calibration_Type;
+chomp $Calibration;
 die "Incorrect type of calibration.\n
 Accepted values are: 'ConservationOfTotalActivation', 'None', 'ConservationOfInitialActivation'\n
-Current value is '$Calibration_Type"
-    unless ($Calibration_Type eq $Calibration_Types{-total}
-        or $Calibration_Type eq $Calibration_Types{-none}
-        or $Calibration_Type eq $Calibration_Types{-initial}
+Current value is '$Calibration"
+    unless ($Calibration eq $Calibration_Types{-total}
+        or $Calibration eq $Calibration_Types{-none}
+        or $Calibration eq $Calibration_Types{-initial}
     );
 
 # Assign initial activation values to corresponding nodes
