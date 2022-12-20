@@ -340,7 +340,7 @@ while (my ($node, $value) = each %Initial_Activation) {
 init_calibration();
 
 for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
-
+    # Send activation signals between nodes
     for my $link (@Links) {
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
@@ -360,12 +360,13 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
     }
 
+    # Calculate new values of nodes
     for my $node_id (sort keys %Nodes) {
         my $new_value = $Parameters{a} * $Nodes{$node_id}->{-value} + $Parameters{b} * $Nodes{$node_id}->{-received_total} + $Parameters{c} * $Nodes{$node_id}->{-sent_total};
 
         $Nodes{$node_id}->{-value} = $new_value;
-
         $Results[$iteration]{$node_id} = $new_value;
+
         reset_totals($node_id);
     }
 
