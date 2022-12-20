@@ -152,8 +152,9 @@ sub init_calibration {
 }
 
 sub calibrate {
-    my $iteration = shift;
     return if ($Calibration eq $Calibration_Types{none});
+
+    my $iteration = shift;
     my $ratio = sum_activation_in_nodes($iteration - 1, @Calibration_Nodes) / sum_activation_in_nodes($iteration, @Calibration_Nodes);
 
     for my $node_id (keys %Nodes) {
