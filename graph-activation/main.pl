@@ -213,7 +213,6 @@ sub parse_parameters {
     my $keyword = shift;
     my @parameters = @_;
 
-    # TODO: Rewrite using switch statement
     if ($keyword eq $Keywords{-link_types}) {
         $Reciprocal_Links{$parameters[0]} = $parameters[1];
         return;
