@@ -113,6 +113,23 @@ sub reset_totals {
     $nodes{$node_id}->{-received_total} = 0;
 }
 
+sub init_calibration {
+    return if ($calibration_type eq 'None');
+
+    # Assign ID of nodes upon which will be calibration values calculated
+    if ($calibration_type eq 'ConservationOfInitialActivation') {
+        for my $node_id (keys %initial_activation) {
+            push @calibration_nodes, $node_id
+        }
+    }
+
+    if ($calibration_type eq 'ConservationOfTotalActivation') {
+        for my $node_id (keys %nodes) {
+            push @calibration_nodes, $node_id;
+        }
+    }
+}
+
 sub calibrate {
     my $iteration = shift;
     return if ($calibration_type eq 'None');
@@ -219,18 +236,7 @@ while (my ($node, $value) = each %initial_activation) {
     $results[0]{$node} = $value;
 }
 
-# Assign ID of nodes upon which will be calibration values calculated
-if ($calibration_type eq 'ConservationOfInitialActivation') {
-    for my $node_id (keys %initial_activation) {
-        push @calibration_nodes, $node_id
-    }
-}
-
-if ($calibration_type eq 'ConservationOfTotalActivation') {
-    for my $node_id (keys %nodes) {
-        push @calibration_nodes, $node_id;
-    }
-}
+init_calibration();
 
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
 
