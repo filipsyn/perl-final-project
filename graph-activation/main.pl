@@ -274,6 +274,11 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-calibration}) {
+        unless ($parameters[0] eq $Calibration_Types{none} or $parameters[0] eq $Calibration_Types{total} or $parameters[0] eq $Calibration_Types{initial}) {
+            my $accepted = join ", ", values %Calibration_Types;
+            die "Incorrect value of Calibration\n\tReceived value: " . $parameters[0] . "\n\tAccepted values: $accepted \n";
+        }
+
         $Calibration = $parameters[0];
         return;
     }
