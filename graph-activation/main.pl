@@ -185,7 +185,7 @@ sub print_table {
     print join("\t", @header), "\n";
     shift @header;
 
-    for (my $iteration = 0; $iteration <= $Iterations_Limit; $iteration++) {
+    for my $iteration (0 .. $Iterations_Limit) {
         print "$iteration\t";
         for my $node_id (@header) {
             # Checking if printed value is initialized, so the interpreter won't complain that we're trying to access
@@ -329,7 +329,7 @@ for my $line (<F>) {
 
 init_calibration();
 
-for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
+for my $iteration (1 .. $Iterations_Limit) {
     # Send activation signals between nodes
     for my $link_ref (@Links) {
         my $initial_node = $$link_ref{-initial_node};
@@ -365,5 +365,3 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
 }
 
 print_table();
-use Data::Dumper;
-print Dumper(\%Reciprocal_Link_For);
