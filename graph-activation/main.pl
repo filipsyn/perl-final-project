@@ -58,6 +58,13 @@ our %initial_activation;
 
 our @calibration_nodes;
 
+our %calibration_types = (
+    -none    => 'None',
+    -initial => 'ConservationOfInitialActivation',
+    -total   => 'ConservationOfTotalActivation'
+);
+
+
 # Subroutines declarations
 ##########################
 
@@ -113,16 +120,16 @@ sub reset_totals {
 }
 
 sub init_calibration {
-    return if ($calibration_type eq 'None');
+    return if ($calibration_type eq $calibration_types{-none});
 
     # Assign ID of nodes upon which will be calibration values calculated
-    if ($calibration_type eq 'ConservationOfInitialActivation') {
+    if ($calibration_type eq $calibration_types{-initial}) {
         for my $node_id (keys %initial_activation) {
             push @calibration_nodes, $node_id
         }
     }
 
-    if ($calibration_type eq 'ConservationOfTotalActivation') {
+    if ($calibration_type eq $calibration_types{-total}) {
         for my $node_id (keys %nodes) {
             push @calibration_nodes, $node_id;
         }
@@ -225,9 +232,10 @@ chomp $calibration_type;
 die "Incorrect type of calibration.\n
 Accepted values are: 'ConservationOfTotalActivation', 'None', 'ConservationOfInitialActivation'\n
 Current value is '$calibration_type"
-    unless ($calibration_type eq 'ConservationOfTotalActivation'
-        or $calibration_type eq 'None'
-        or $calibration_type eq 'ConservationOfInitialActivation');
+    unless ($calibration_type eq $calibration_types{-total}
+        or $calibration_type eq $calibration_types{-none}
+        or $calibration_type eq $calibration_types{-initial}
+    );
 
 # Assign initial activation values to corresponding nodes
 while (my ($node, $value) = each %initial_activation) {
