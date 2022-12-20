@@ -54,16 +54,16 @@ our %Initial_Activation;
 
 our @Calibration_Nodes;
 
-our %Calibration_Types = (
+our %Calibration_Type = (
     none    => 'None',
     initial => 'ConservationOfInitialActivation',
     total   => 'ConservationOfTotalActivation'
 );
 
 # Decides what type of calibration is used to normalize node values
-our $Calibration = $Calibration_Types{none};
+our $Calibration = $Calibration_Type{none};
 
-our %Keywords = (
+our %Keyword_For = (
     -node_types         => 'nt',
     -link_types         => 'ltra',
     -node               => 'n',
@@ -136,15 +136,15 @@ sub reset_totals {
 }
 
 sub init_calibration {
-    return if ($Calibration eq $Calibration_Types{none});
+    return if ($Calibration eq $Calibration_Type{none});
 
-    if ($Calibration eq $Calibration_Types{initial}) {
+    if ($Calibration eq $Calibration_Type{initial}) {
         for my $node_id (keys %Initial_Activation) {
             push @Calibration_Nodes, $node_id
         }
     }
 
-    if ($Calibration eq $Calibration_Types{total}) {
+    if ($Calibration eq $Calibration_Type{total}) {
         for my $node_id (keys %Node) {
             push @Calibration_Nodes, $node_id;
         }
@@ -152,7 +152,7 @@ sub init_calibration {
 }
 
 sub calibrate {
-    return if ($Calibration eq $Calibration_Types{none});
+    return if ($Calibration eq $Calibration_Type{none});
 
     my $iteration = shift;
     my $ratio = sum_activation_in_nodes($iteration - 1, @Calibration_Nodes) / sum_activation_in_nodes($iteration, @Calibration_Nodes);
@@ -213,12 +213,12 @@ sub parse_parameters {
     my $keyword = shift;
     my @parameters = @_;
 
-    if ($keyword eq $Keywords{-link_types}) {
+    if ($keyword eq $Keyword_For{-link_types}) {
         $Reciprocal_Link_For{$parameters[0]} = $parameters[1];
         return;
     }
 
-    if ($keyword eq $Keywords{-node}) {
+    if ($keyword eq $Keyword_For{-node}) {
         $Node{$parameters[0]} = {
             -type           => $parameters[1],
             -value          => 0,
@@ -228,7 +228,7 @@ sub parse_parameters {
         return;
     }
 
-    if ($keyword eq $Keywords{-link}) {
+    if ($keyword eq $Keyword_For{-link}) {
         unless (exists $Node{$parameters[0]} and exists $Node{$parameters[1]}) {
             die "Trying to use invalid node in link\n\tEither " . $parameters[0] . " or " . $parameters[1] . " node does not exist.\n";
         }
@@ -246,7 +246,7 @@ sub parse_parameters {
         return;
     }
 
-    if ($keyword eq $Keywords{-initial_activation}) {
+    if ($keyword eq $Keyword_For{-initial_activation}) {
         unless (exists $Node{$parameters[0]}) {
             die "trying to initialize node " . $parameters[0] . " which doesn't exist.\n";
         }
@@ -258,24 +258,24 @@ sub parse_parameters {
         return;
     }
 
-    if ($keyword eq $Keywords{-link_weight}) {
+    if ($keyword eq $Keyword_For{-link_weight}) {
         $Link_Weight_For{$parameters[0]} = $parameters[1];
         return;
     }
 
-    if ($keyword eq $Keywords{-beta}) {
+    if ($keyword eq $Keyword_For{-beta}) {
         $Beta = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keywords{-iterations_limit}) {
+    if ($keyword eq $Keyword_For{-iterations_limit}) {
         $Iterations_Limit = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keywords{-calibration}) {
-        unless ($parameters[0] eq $Calibration_Types{none} or $parameters[0] eq $Calibration_Types{total} or $parameters[0] eq $Calibration_Types{initial}) {
-            my $accepted = join ", ", values %Calibration_Types;
+    if ($keyword eq $Keyword_For{-calibration}) {
+        unless ($parameters[0] eq $Calibration_Type{none} or $parameters[0] eq $Calibration_Type{total} or $parameters[0] eq $Calibration_Type{initial}) {
+            my $accepted = join ", ", values %Calibration_Type;
             die "Incorrect value of Calibration\n\tReceived value: " . $parameters[0] . "\n\tAccepted values: $accepted \n";
         }
 
@@ -283,27 +283,27 @@ sub parse_parameters {
         return;
     }
 
-    if ($keyword eq $Keywords{-a}) {
+    if ($keyword eq $Keyword_For{-a}) {
         $Parameter{a} = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keywords{-b}) {
+    if ($keyword eq $Keyword_For{-b}) {
         $Parameter{b} = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keywords{-c}) {
+    if ($keyword eq $Keyword_For{-c}) {
         $Parameter{c} = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keywords{-threshold}) {
+    if ($keyword eq $Keyword_For{-threshold}) {
         $Threshold = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keywords{-node_types}) {
+    if ($keyword eq $Keyword_For{-node_types}) {
         return;
     }
 
