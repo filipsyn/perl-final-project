@@ -46,7 +46,7 @@ our %Parameter = (a => 0, b => 0, c => 0);
 
 our %Reciprocal_Link_For;
 
-our %Link_Weights;
+our %Link_Weight_For;
 
 our $Threshold;
 
@@ -259,7 +259,7 @@ sub parse_parameters {
     }
 
     if ($keyword eq $Keywords{-link_weight}) {
-        $Link_Weights{$parameters[0]} = $parameters[1];
+        $Link_Weight_For{$parameters[0]} = $parameters[1];
         return;
     }
 
@@ -335,7 +335,7 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
         my $initial_node = $$link{-initial_node};
         my $terminal_node = $$link{-terminal_node};
         my $initial_value = $Node{$initial_node}->{-value};
-        my $weight = $Link_Weights{$$link{-type}};
+        my $weight = $Link_Weight_For{$$link{-type}};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
 
@@ -343,7 +343,7 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
         next unless (exists $Reciprocal_Link_For{$$link{-type}});
 
         # Find link weight corresponding to reciprocal link
-        $weight = $Link_Weights{$Reciprocal_Link_For{$$link{-type}}};
+        $weight = $Link_Weight_For{$Reciprocal_Link_For{$$link{-type}}};
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
         $initial_value = $Node{$initial_node}->{-value};
 
