@@ -80,6 +80,7 @@ sub is_reciprocal {
 }
 
 # Calculates outdegree for passed node id
+# Also takes in counts reciprocal links into outdegree
 sub outdegree {
     my $node = shift;
     my $count = 0;
@@ -199,12 +200,9 @@ open F, "params.txt" or die "Can't open params.txt file\n";
 
 # Processing input file with parameters
 for my $line (<F>) {
-
     # Skip comments or empty lines
     next if ($line =~ /^#/ or $line =~ /^\s/);
 
-    # Split line values into array
-    # Some values are separated by multiple tabs.
     chomp $line;
     my @conf = split /\s+/, $line;
 
