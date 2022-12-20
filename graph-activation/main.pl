@@ -61,6 +61,17 @@ our @calibration_nodes;
 # Subroutines declarations
 ##########################
 
+# Find if link type passed in as a parameter is reciprocal type of link
+# Returns "truthy" or "falsy" value
+sub is_reciprocal {
+    my $link_type = shift;
+
+    for my $type (sort values %reciprocal_links) {
+        return 1 if ($link_type eq $type);
+    }
+
+    return 0;
+}
 
 # Calculates outdegree for passed node id
 sub outdegree {
@@ -73,18 +84,6 @@ sub outdegree {
     }
 
     return $count;
-}
-
-# Find if link type passed in as a parameter is reciprocal type of link
-# Returns "truthy" or "falsy" value
-sub is_reciprocal {
-    my $link_type = shift;
-
-    for my $type (sort values %reciprocal_links) {
-        return 1 if ($link_type eq $type);
-    }
-
-    return 0;
 }
 
 # Subroutine that sends activation signal from initial node to terminal node.
