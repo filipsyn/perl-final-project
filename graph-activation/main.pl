@@ -327,12 +327,6 @@ for my $line (<F>) {
     parse_parameters(@conf);
 }
 
-# Assign initial activation values to corresponding nodes
-while (my ($node, $value) = each %Initial_Activation) {
-    $Nodes{$node}->{-value} = $value;
-    $Results[0]{$node} = $value;
-}
-
 init_calibration();
 
 for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
