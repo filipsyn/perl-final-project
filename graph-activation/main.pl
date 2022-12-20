@@ -161,7 +161,6 @@ sub calibrate {
     }
 }
 
-
 # Subroutine to calculate sum of values of specified nodes in specified iteration
 # Parameters:
 #   - iteration: First argument - specifies iteration in which are activation values searched
