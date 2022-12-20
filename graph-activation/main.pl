@@ -58,9 +58,9 @@ our %Initial_Activation;
 our @Calibration_Nodes;
 
 our %Calibration_Types = (
-    -none    => 'None',
-    -initial => 'ConservationOfInitialActivation',
-    -total   => 'ConservationOfTotalActivation'
+    none    => 'None',
+    initial => 'ConservationOfInitialActivation',
+    total   => 'ConservationOfTotalActivation'
 );
 
 
@@ -120,15 +120,15 @@ sub reset_totals {
 }
 
 sub init_calibration {
-    return if ($Calibration eq $Calibration_Types{-none});
+    return if ($Calibration eq $Calibration_Types{none});
 
-    if ($Calibration eq $Calibration_Types{-initial}) {
+    if ($Calibration eq $Calibration_Types{initial}) {
         for my $node_id (keys %Initial_Activation) {
             push @Calibration_Nodes, $node_id
         }
     }
 
-    if ($Calibration eq $Calibration_Types{-total}) {
+    if ($Calibration eq $Calibration_Types{total}) {
         for my $node_id (keys %Nodes) {
             push @Calibration_Nodes, $node_id;
         }
@@ -137,7 +137,7 @@ sub init_calibration {
 
 sub calibrate {
     my $iteration = shift;
-    return if ($Calibration eq 'None');
+    return if ($Calibration eq $Calibration_Types{none});
     my $ratio = sum_activation_in_nodes($iteration - 1, @Calibration_Nodes) / sum_activation_in_nodes($iteration, @Calibration_Nodes);
 
     for my $node_id (keys %Nodes) {
@@ -228,9 +228,9 @@ chomp $Calibration;
 die "Incorrect type of calibration.\n
 Accepted values are: 'ConservationOfTotalActivation', 'None', 'ConservationOfInitialActivation'\n
 Current value is '$Calibration"
-    unless ($Calibration eq $Calibration_Types{-total}
-        or $Calibration eq $Calibration_Types{-none}
-        or $Calibration eq $Calibration_Types{-initial}
+    unless ($Calibration eq $Calibration_Types{total}
+        or $Calibration eq $Calibration_Types{none}
+        or $Calibration eq $Calibration_Types{initial}
     );
 
 # Assign initial activation values to corresponding nodes
