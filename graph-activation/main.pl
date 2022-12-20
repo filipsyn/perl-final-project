@@ -271,5 +271,4 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
     check_threshold($iteration);
 }
 
-use Data::Dumper;
 print_table();
