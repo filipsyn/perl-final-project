@@ -242,6 +242,7 @@ sub parse_parameters {
             -terminal_node => $parameters[1],
             -type          => $parameters[2],
         };
+
         return;
     }
 
