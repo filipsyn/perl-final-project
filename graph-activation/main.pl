@@ -217,6 +217,29 @@ sub sum_activation_in_nodes {
     return $sum;
 }
 
+sub print_table {
+    # Construct table header
+    my @header = sort keys %nodes;
+    unshift @header, "Iter.";
+    print join("\t", @header), "\n";
+    shift @header;
+
+    for (my $iteration = 0; $iteration <= $iterations_limit; $iteration++) {
+        print "$iteration\t";
+        for my $node_id (@header) {
+            # Checking if printed value is initialized, so the interpreter won't complain that we're trying to access
+            # uninitialized value
+            if (exists $results[$iteration]->{$node_id}) {
+                printf "%.5f\t", $results[$iteration]->{$node_id};
+            }
+            else {
+                printf "%.5f\t", 0;
+            }
+        }
+        print "\n";
+    }
+}
+
 for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
 
     for my $link (@links) {
@@ -254,14 +277,4 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
 }
 
 use Data::Dumper;
-#print Dumper(\%nodes);
-#print Dumper(\@links);
-#print Dumper(\%reciprocal_links);
-#print Dumper(\%link_weights);
-#print Dumper(\%initial_activation);
-print Dumper(\@results);
-
-#print sum_activation_in_iteration(3);
-#print sum_activation_in_nodes(2, 'A1', 'T');
-
-print Dumper(\@calibration_nodes);
+print_table();
