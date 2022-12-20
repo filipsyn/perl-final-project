@@ -168,10 +168,7 @@ while (my ($node, $value) = each %initial_activation) {
 print "\n";
 
 sub calibrate {
-
-}
-
-sub calibration_total_conservation {
+    return if ($calibration_type eq 'None');
 
 }
 
