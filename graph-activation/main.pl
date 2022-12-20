@@ -63,6 +63,22 @@ our %Calibration_Types = (
     total   => 'ConservationOfTotalActivation'
 );
 
+our %Keywords = (
+    -node_types         => 'nt',
+    -link_types         => 'ltra',
+    -node               => 'n',
+    -link               => 'l',
+    -initial_activation => 'ia',
+    -link_weight        => 'lw',
+    -beta               => 'Beta',
+    -iterations_limit   => 'IterationsNo',
+    -calibration        => 'Calibration',
+    -a                  => 'a',
+    -b                  => 'b',
+    -c                  => 'c',
+    -threshold          => 't'
+);
+
 
 # Subroutines declarations
 ##########################
@@ -193,6 +209,88 @@ sub check_threshold {
     }
 }
 
+sub parse_parameters {
+    my $keyword = shift;
+    my @parameters = @_;
+
+    # TODO: Rewrite using switch statement
+    if ($keyword eq $Keywords{-link_types}) {
+        $Reciprocal_Links{$parameters[0]} = $parameters[1];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-node}) {
+        $Nodes{$parameters[0]} = {
+            -type           => $parameters[1],
+            -value          => 0,
+            -sent_total     => 0,
+            -received_total => 0,
+        };
+        return;
+    }
+
+    if ($keyword eq $Keywords{-link}) {
+        push @Links, {
+            -initial_node  => $parameters[0],
+            -terminal_node => $parameters[1],
+            -type          => $parameters[2],
+        };
+        return;
+    }
+
+    if ($keyword eq $Keywords{-initial_activation}) {
+        $Initial_Activation{$parameters[0]} = $parameters[1];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-link_weight}) {
+        $Link_Weights{$parameters[0]} = $parameters[1];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-beta}) {
+        $Beta = $parameters[0];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-iterations_limit}) {
+        $Iterations_Limit = $parameters[0];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-calibration}) {
+        $Calibration = $parameters[0];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-a}) {
+        $Parameters{a} = $parameters[0];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-b}) {
+        $Parameters{b} = $parameters[0];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-c}) {
+        $Parameters{c} = $parameters[0];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-threshold}) {
+        $Threshold = $parameters[0];
+        return;
+    }
+
+    if ($keyword eq $Keywords{-node_types}) {
+        return;
+    }
+
+    die "$keyword is not recognized configuration keyword\n";
+}
+
+
 # Main logic
 ############
 
@@ -206,22 +304,7 @@ for my $line (<F>) {
     chomp $line;
     my @conf = split /\s+/, $line;
 
-    # Parsing configuration to prepared data structures
-    $Beta = $conf[1] if ($conf[0] eq "Beta");
-    $Iterations_Limit = $conf[1] if ($conf[0] eq "IterationsNo");
-    $Calibration = $conf[1] if ($conf[0] eq "Calibration");
-    $Nodes{ $conf[1] } = { -type => $conf[2], -value => 0, -sent_total => 0, -received_total => 0 }
-        if ($conf[0] eq 'n');
-    push @Links, { -initial_node => $conf[1], -terminal_node => $conf[2], -type => $conf[3] }
-        if ($conf[0] eq 'l');
-
-    $Reciprocal_Links{$conf[1]} = $conf[2] if ($conf[0] eq 'ltra');
-    $Link_Weights{$conf[1]} = $conf[2] if ($conf[0] eq 'lw');
-    $Threshold = $conf[1] if ($conf[0] eq 't');
-    $Initial_Activation{$conf[1]} = $conf[2] if ($conf[0] eq 'ia');
-    $Parameters{a} = $conf[1] if ($conf[0] eq 'a');
-    $Parameters{b} = $conf[1] if ($conf[0] eq 'b');
-    $Parameters{c} = $conf[1] if ($conf[0] eq 'c');
+    parse_parameters(@conf);
 }
 
 chomp $Calibration;
