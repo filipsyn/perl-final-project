@@ -163,6 +163,13 @@ sub print_table {
     }
 }
 
+sub check_threshold {
+    my $iteration = shift;
+
+    for my $node_id (keys %nodes) {
+        $results[$iteration]->{$node_id} = 0 if ($results[$iteration]->{$node_id} < $threshold);
+    }
+}
 
 # Main logic
 ############
@@ -256,7 +263,7 @@ for (my $iteration = 1; $iteration <= $iterations_limit; $iteration++) {
     }
 
     calibrate($iteration);
-    #TODO: Check if values are over threshold
+    check_threshold($iteration);
 }
 
 use Data::Dumper;
