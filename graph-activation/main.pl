@@ -44,7 +44,7 @@ our $Iterations_Limit;
 # Parameters a, b and c are used to calculate new values of nodes
 our %Parameter = (a => 0, b => 0, c => 0);
 
-our %Reciprocal_Links;
+our %Reciprocal_Link_For;
 
 our %Link_Weights;
 
@@ -88,7 +88,7 @@ our %Keywords = (
 sub is_reciprocal {
     my $link_type = shift;
 
-    for my $type (sort values %Reciprocal_Links) {
+    for my $type (sort values %Reciprocal_Link_For) {
         return 1 if ($link_type eq $type);
     }
 
@@ -103,7 +103,7 @@ sub outdegree {
 
     for my $link (@Links) {
         $count++ if ($$link{-initial_node} eq $node
-            or (($$link{-terminal_node} eq $node) and (is_reciprocal($Reciprocal_Links{$$link{-type}}))));
+            or (($$link{-terminal_node} eq $node) and (is_reciprocal($Reciprocal_Link_For{$$link{-type}}))));
     }
 
     return $count;
@@ -214,7 +214,7 @@ sub parse_parameters {
     my @parameters = @_;
 
     if ($keyword eq $Keywords{-link_types}) {
-        $Reciprocal_Links{$parameters[0]} = $parameters[1];
+        $Reciprocal_Link_For{$parameters[0]} = $parameters[1];
         return;
     }
 
@@ -233,7 +233,7 @@ sub parse_parameters {
             die "Trying to use invalid node in link\n\tEither " . $parameters[0] . " or " . $parameters[1] . " node does not exist.\n";
         }
 
-        unless (exists $Reciprocal_Links{$parameters[2]}) {
+        unless (exists $Reciprocal_Link_For{$parameters[2]}) {
             die "Trying to parse link with incorrect link type " . $parameters[2] . "\n"
         };
 
@@ -340,10 +340,10 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
 
         # Check if this link type is reciprocal
-        next unless (exists $Reciprocal_Links{$$link{-type}});
+        next unless (exists $Reciprocal_Link_For{$$link{-type}});
 
         # Find link weight corresponding to reciprocal link
-        $weight = $Link_Weights{$Reciprocal_Links{$$link{-type}}};
+        $weight = $Link_Weights{$Reciprocal_Link_For{$$link{-type}}};
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
         $initial_value = $Node{$initial_node}->{-value};
 
@@ -365,3 +365,5 @@ for (my $iteration = 1; $iteration <= $Iterations_Limit; $iteration++) {
 }
 
 print_table();
+use Data::Dumper;
+print Dumper(\%Reciprocal_Link_For);
