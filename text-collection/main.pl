@@ -68,7 +68,7 @@ sub print_table {
     print join("\t", @header), "\n";
 
     # Printing table with values
-    for my $doc (@documents) {
+    for my $doc (@Documents) {
         for my $column (@header) {
 
             # Print class as is and continue to next iteration
