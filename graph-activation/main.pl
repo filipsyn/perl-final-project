@@ -310,7 +310,7 @@ sub parse_parameters {
 # Main logic
 ############
 
-open F, "params.txt" or die "Can't open params.txt file\n";
+open F, "config.txt" or die "Can't open config.txt file\n";
 
 # Processing input file with parameters
 for my $line (<F>) {
