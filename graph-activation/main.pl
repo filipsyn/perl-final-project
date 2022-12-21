@@ -64,19 +64,19 @@ our %Calibration_Type = (
 our $Calibration = $Calibration_Type{none};
 
 our %Keyword_For = (
-    -node_types         => 'nt',
-    -link_types         => 'ltra',
-    -node               => 'n',
-    -link               => 'l',
-    -initial_activation => 'ia',
-    -link_weight        => 'lw',
-    -beta               => 'Beta',
-    -iterations_limit   => 'IterationsNo',
-    -calibration        => 'Calibration',
-    -a                  => 'a',
-    -b                  => 'b',
-    -c                  => 'c',
-    -threshold          => 't'
+    node_types         => 'nt',
+    link_types         => 'ltra',
+    node               => 'n',
+    link               => 'l',
+    initial_activation => 'ia',
+    link_weight        => 'lw',
+    beta               => 'Beta',
+    iterations_limit   => 'IterationsNo',
+    calibration        => 'Calibration',
+    a                  => 'a',
+    b                  => 'b',
+    c                  => 'c',
+    threshold          => 't'
 );
 
 
@@ -102,8 +102,8 @@ sub outdegree {
     my $count = 0;
 
     for my $link (@Links) {
-        $count++ if ($$link{-initial_node} eq $node
-            or (($$link{-terminal_node} eq $node) and (is_reciprocal($Reciprocal_Link_For{$$link{-type}}))));
+        $count++ if ($$link{initial_node} eq $node
+            or (($$link{terminal_node} eq $node) and (is_reciprocal($Reciprocal_Link_For{$$link{type}}))));
     }
 
     return $count;
@@ -118,21 +118,21 @@ sub outdegree {
 sub send_activation {
     my %args = @_;
 
-    my $initial_value = $Node{$args{-initial_node}}->{-value};
+    my $initial_value = $Node{$args{-initial_node}}->{value};
 
     my $link_input = $initial_value * 1 / outdegree($args{-initial_node}) ** $Beta;
     my $link_output = $link_input * $args{-weight};
 
-    $Node{$args{-initial_node}}->{-sent_total} += $link_input;
-    $Node{$args{-terminal_node}}->{-received_total} += $link_output;
+    $Node{$args{-initial_node}}->{sent_total} += $link_input;
+    $Node{$args{-terminal_node}}->{received_total} += $link_output;
 }
 
 # Resets sum of sent and received activation values for node with node ID passed as a parameter
 sub reset_totals {
     my $node_id = shift;
 
-    $Node{$node_id}->{-sent_total} = 0;
-    $Node{$node_id}->{-received_total} = 0;
+    $Node{$node_id}->{sent_total} = 0;
+    $Node{$node_id}->{received_total} = 0;
 }
 
 sub init_calibration {
@@ -213,22 +213,22 @@ sub parse_parameters {
     my $keyword = shift;
     my @parameters = @_;
 
-    if ($keyword eq $Keyword_For{-link_types}) {
+    if ($keyword eq $Keyword_For{link_types}) {
         $Reciprocal_Link_For{$parameters[0]} = $parameters[1];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-node}) {
+    if ($keyword eq $Keyword_For{node}) {
         $Node{$parameters[0]} = {
-            -type           => $parameters[1],
-            -value          => 0,
-            -sent_total     => 0,
-            -received_total => 0,
+            type           => $parameters[1],
+            value          => 0,
+            sent_total     => 0,
+            received_total => 0,
         };
         return;
     }
 
-    if ($keyword eq $Keyword_For{-link}) {
+    if ($keyword eq $Keyword_For{link}) {
         unless (exists $Node{$parameters[0]} and exists $Node{$parameters[1]}) {
             die "Trying to use invalid node in link\n\tEither " . $parameters[0] . " or " . $parameters[1] . " node does not exist.\n";
         }
@@ -238,42 +238,42 @@ sub parse_parameters {
         };
 
         push @Links, {
-            -initial_node  => $parameters[0],
-            -terminal_node => $parameters[1],
-            -type          => $parameters[2],
+            initial_node  => $parameters[0],
+            terminal_node => $parameters[1],
+            type          => $parameters[2],
         };
 
         return;
     }
 
-    if ($keyword eq $Keyword_For{-initial_activation}) {
+    if ($keyword eq $Keyword_For{initial_activation}) {
         unless (exists $Node{$parameters[0]}) {
             die "trying to initialize node " . $parameters[0] . " which doesn't exist.\n";
         }
 
         $Initial_Activation{$parameters[0]} = $parameters[1];
-        $Node{$parameters[0]}->{-value} = $parameters[1];
+        $Node{$parameters[0]}->{value} = $parameters[1];
         $Results[0]{$parameters[0]} = $parameters[1];
 
         return;
     }
 
-    if ($keyword eq $Keyword_For{-link_weight}) {
+    if ($keyword eq $Keyword_For{link_weight}) {
         $Link_Weight_For{$parameters[0]} = $parameters[1];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-beta}) {
+    if ($keyword eq $Keyword_For{beta}) {
         $Beta = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-iterations_limit}) {
+    if ($keyword eq $Keyword_For{iterations_limit}) {
         $Iterations_Limit = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-calibration}) {
+    if ($keyword eq $Keyword_For{calibration}) {
         unless ($parameters[0] eq $Calibration_Type{none} or $parameters[0] eq $Calibration_Type{total} or $parameters[0] eq $Calibration_Type{initial}) {
             my $accepted = join ", ", values %Calibration_Type;
             die "Incorrect value of Calibration\n\tReceived value: " . $parameters[0] . "\n\tAccepted values: $accepted \n";
@@ -283,27 +283,27 @@ sub parse_parameters {
         return;
     }
 
-    if ($keyword eq $Keyword_For{-a}) {
+    if ($keyword eq $Keyword_For{a}) {
         $Parameter{a} = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-b}) {
+    if ($keyword eq $Keyword_For{b}) {
         $Parameter{b} = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-c}) {
+    if ($keyword eq $Keyword_For{c}) {
         $Parameter{c} = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-threshold}) {
+    if ($keyword eq $Keyword_For{threshold}) {
         $Threshold = $parameters[0];
         return;
     }
 
-    if ($keyword eq $Keyword_For{-node_types}) {
+    if ($keyword eq $Keyword_For{node_types}) {
         return;
     }
 
@@ -332,29 +332,31 @@ init_calibration();
 for my $iteration (1 .. $Iterations_Limit) {
     # Send activation signals between nodes
     for my $link_ref (@Links) {
-        my $initial_node = $$link_ref{-initial_node};
-        my $terminal_node = $$link_ref{-terminal_node};
-        my $initial_value = $Node{$initial_node}->{-value};
-        my $weight = $Link_Weight_For{$$link_ref{-type}};
+        my $initial_node = $$link_ref{initial_node};
+        my $terminal_node = $$link_ref{terminal_node};
+        my $initial_value = $Node{$initial_node}->{value};
+        my $weight = $Link_Weight_For{$$link_ref{type}};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
 
         # Check if this link type is reciprocal
-        next unless (exists $Reciprocal_Link_For{$$link_ref{-type}});
+        next unless (exists $Reciprocal_Link_For{$$link_ref{type}});
 
         # Find link weight corresponding to reciprocal link
-        $weight = $Link_Weight_For{$Reciprocal_Link_For{$$link_ref{-type}}};
+        $weight = $Link_Weight_For{$Reciprocal_Link_For{$$link_ref{type}}};
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
-        $initial_value = $Node{$initial_node}->{-value};
+        $initial_value = $Node{$initial_node}->{value};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
     }
 
     # Calculate new values of nodes
     for my $node_id (sort keys %Node) {
-        my $new_value = $Parameter{a} * $Node{$node_id}->{-value} + $Parameter{b} * $Node{$node_id}->{-received_total} + $Parameter{c} * $Node{$node_id}->{-sent_total};
+        my $new_value = $Parameter{a} * $Node{$node_id}->{value}
+            + $Parameter{b} * $Node{$node_id}->{received_total}
+            + $Parameter{c} * $Node{$node_id}->{sent_total};
 
-        $Node{$node_id}->{-value} = $new_value;
+        $Node{$node_id}->{value} = $new_value;
         $Results[$iteration]{$node_id} = $new_value;
 
         reset_totals($node_id);
