@@ -88,7 +88,7 @@ our %Keyword_For = (
 sub is_reciprocal {
     my $link_type = shift;
 
-    for my $type (sort values %Reciprocal_Link_For) {
+    for my $type (values %Reciprocal_Link_For) {
         return 1 if ($link_type eq $type);
     }
 
@@ -347,7 +347,7 @@ for my $iteration (1 .. $Iterations_Limit) {
     }
 
     # Calculate new values of nodes
-    for my $node_id (sort keys %Node) {
+    for my $node_id (keys %Node) {
         my $new_value = $Parameter{a} * $Node{$node_id}->{value}
             + $Parameter{b} * $Node{$node_id}->{received_total}
             + $Parameter{c} * $Node{$node_id}->{sent_total};
