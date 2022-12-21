@@ -2,7 +2,10 @@ use strict;
 use warnings;
 use Getopt::Long;
 
-# Default values for arguments
+#################################
+# GLOBAL VARIABLES DECLARATIONS #
+#################################
+
 our $Input_File = "input.txt";
 our $Minimal_Length = 1;
 our $Minimal_Occurrence = 1;
@@ -11,9 +14,9 @@ our $Local_Weight = "tp";
 our @Documents = ();
 our %Term_Occurrence_Of;
 
-#########################
-# FUNCTION DECLARATIONS #
-#########################
+###########################
+# SUBROUTINE DECLARATIONS #
+###########################
 
 # Stripes HTML tags and non-letter characters from text. Also turns the term uppercase to have standardized form of the terms.
 # Argument:
