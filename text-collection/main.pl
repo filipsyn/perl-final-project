@@ -67,32 +67,19 @@ sub print_table {
     push @header, '_class_';
     print join("\t", @header), "\n";
 
-    # Printing table with values
     for my $doc (@Documents) {
-        for my $column (@header) {
-
+        for my $term (@header) {
             # Print class as is and continue to next iteration
-            if ($column eq '_class_') {
-                print "$doc->{$column}";
+            if ($term eq '_class_') {
+                print "$doc->{$term}";
                 next;
             }
 
-            my $out;
-
-            # If value of this term is not zero, format it so it has up to 5 decimal places.
-            # This step ensures correct formatting of table.
-            if (exists $doc->{$column}) {
-                $out = sprintf('%.5f', $doc->{$column});
-            }
-            else {
-                $out = 0;
-            }
-
-            print "$out\t";
+            my $output = (exists $doc->{$term}) ? $doc->{$term} : 0;
+            printf "%.5f\t", $output;
         }
         print "\n";
     }
-
 }
 
 
