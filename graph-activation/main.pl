@@ -190,12 +190,8 @@ sub print_table {
         for my $node_id (@header) {
             # Checking if printed value is initialized, so the interpreter won't complain that we're trying to access
             # uninitialized value
-            if (exists $Results[$iteration]->{$node_id}) {
-                printf "%.5f\t", $Results[$iteration]->{$node_id};
-            }
-            else {
-                printf "%.5f\t", 0;
-            }
+            my $output = (exists $Results[$iteration]->{$node_id}) ? $Results[$iteration]->{$node_id} : 0;
+            printf "%.5f\t", $output;
         }
         print "\n";
     }
