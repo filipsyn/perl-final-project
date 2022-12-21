@@ -129,10 +129,10 @@ sub calculate_normalization_factor {
 
 # Parsing command line arguments to corresponding variables.
 GetOptions(
-    "input-file|f=s"        => \$Input_File,
-    "minimal-length|l=i"    => \$Minimal_Length,
+    "input-file|f=s"         => \$Input_File,
+    "minimal-length|l=i"     => \$Minimal_Length,
     "minimal-occurrence|n=i" => \$Minimal_Occurrence,
-    "local-weight|w=s"      => \$Local_Weight
+    "local-weight|w=s"       => \$Local_Weight
 ) or die "Error in command line arguments\n";
 
 # Checking valid if local_weight has either "tp" or "tf" value
