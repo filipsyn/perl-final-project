@@ -101,9 +101,9 @@ sub outdegree {
     my $node = shift;
     my $count = 0;
 
-    for my $link (@Links) {
-        $count++ if ($$link{initial_node} eq $node
-            or (($$link{terminal_node} eq $node) and (is_reciprocal($Reciprocal_Link_For{$$link{type}}))));
+    for my $link_ref (@Links) {
+        $count++ if ($link_ref->{initial_node} eq $node
+            or (($link_ref->{terminal_node} eq $node) and (is_reciprocal($Reciprocal_Link_For{$link_ref->{type}}))));
     }
 
     return $count;
