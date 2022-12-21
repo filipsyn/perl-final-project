@@ -5,17 +5,17 @@ use Getopt::Long;
 # Default values for arguments
 our $input_file = "input.txt";
 our $minimal_length = 1;
-our $minimal_occurance = 1;
+our $minimal_occurrence = 1;
 our $local_weight = "tp";
 
 our @documents = ();
 our %unique_words;
 
 #########################
-# FUNCTION DECLARAITONS #
+# FUNCTION DECLARATIONS #
 #########################
 
-# Stripes HTML tags and non-letter characters from text. Also uppercases the term to have standardized form of the terms.
+# Stripes HTML tags and non-letter characters from text. Also turns the term uppercase to have standardized form of the terms.
 # Argument:
 #   - "dirty" text
 # Returns:
@@ -33,7 +33,7 @@ sub clean_term {
 }
 
 
-# Subrutine to calculate decadic logarihm
+# Subroutine to calculate decimal logarithm
 # Perl's standard log() function uses e as a base.
 # This code is taken from Perl Func documentation
 # https://perldoc.perl.org/perlfunc#log
@@ -43,10 +43,10 @@ sub log10 {
 }
 
 
-# Returns number of documents in which searched term occures
+# Returns number of documents in which searched term occurs
 # Arguments:
 #   - term which is searched across the documents
-sub term_occurance_in_documents {
+sub term_occurrence_in_documents {
     my $term = uc shift;
     my $count = 0;
     for my $doc (@documents) {
@@ -96,7 +96,7 @@ sub print_table {
 # Calculates Inverse Document Frequency factor for term passed as argument.
 sub calculate_idf_for_term {
     my $term = shift;
-    return log10(scalar(@documents) / term_occurance_in_documents($term));
+    return log10(scalar(@documents) / term_occurrence_in_documents($term));
 }
 
 # Sums weight of all terms in document vector, that is passed
@@ -107,7 +107,6 @@ sub calculate_idf_for_term {
 sub sum_all_weights_in_document {
     my $sum = 0;
 
-    # Retrieving pointer to hash passed as an argument and dereferencing it
     my $arg = shift;
     my %document = %{$arg};
 
@@ -142,11 +141,11 @@ sub calculate_normalization_factor {
 GetOptions(
     "input-file|f=s"        => \$input_file,
     "minimal-length|l=i"    => \$minimal_length,
-    "minimal-occurance|n=i" => \$minimal_occurance,
+    "minimal-occurrence|n=i" => \$minimal_occurrence,
     "local-weight|w=s"      => \$local_weight
 ) or die "Error in command line arguments\n";
 
-# Checking valid if local_weight has eiher "tp" or "tf" value
+# Checking valid if local_weight has either "tp" or "tf" value
 die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n"
     unless ($local_weight eq "tp" or $local_weight eq "tf");
 
@@ -162,7 +161,7 @@ for my $line (<F>) {
     # List of words in whole line
     my @words = split /\s+/, $text;
 
-    # Initialization of hash of words and occurances.
+    # Initialization of hash of words and occurrences.
     my %line;
 
     # Checking if words in line have the minimal length
@@ -171,14 +170,14 @@ for my $line (<F>) {
             $line{$word}++;
 
             # Word is put into hash of unique words
-            # word => number of occurances across all documents (lines)
+            # word => number of occurrences across all documents (lines)
             $unique_words{$word}++;
         }
     }
 
     if ($local_weight eq 'tp') {
         # In case of local weight set to "Term Presence"
-        # Turn values into "1" - occured, "0" - didn't occur
+        # Turn values into "1" - occurred, "0" - didn't occur
         for my $word (keys %line) {
             $line{$word} = $line{$word} ** 0
                 unless ($line{$word} == 0);
@@ -192,10 +191,10 @@ for my $line (<F>) {
     push @documents, \%line;
 }
 
-# Remove words with occurance less than specified number of minimal occurances
+# Remove words with occurrence less than specified number of minimal occurrences
 for my $word (keys %unique_words) {
     delete $unique_words{$word}
-        if ($unique_words{$word} < $minimal_occurance);
+        if ($unique_words{$word} < $minimal_occurrence);
 }
 
 # Calculate corresponding values for each term in each document.
