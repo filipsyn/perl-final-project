@@ -3,13 +3,13 @@ use warnings;
 use Getopt::Long;
 
 # Default values for arguments
-our $input_file = "input.txt";
-our $minimal_length = 1;
-our $minimal_occurrence = 1;
-our $local_weight = "tp";
+our $Input_File = "input.txt";
+our $Minimal_Length = 1;
+our $Minimal_Occurrence = 1;
+our $Local_Weight = "tp";
 
-our @documents = ();
-our %unique_words;
+our @Documents = ();
+our %Term_Occurrence_Of;
 
 #########################
 # FUNCTION DECLARATIONS #
@@ -49,7 +49,7 @@ sub log10 {
 sub term_occurrence_in_documents {
     my $term = uc shift;
     my $count = 0;
-    for my $doc (@documents) {
+    for my $doc (@Documents) {
         $count++ if (exists $doc->{$term});
     }
 
@@ -60,7 +60,7 @@ sub term_occurrence_in_documents {
 sub print_table {
     # Create table header
     # Header is made out of words that pass the criteria specified by command-line arguments and _class_ column
-    my @header = sort keys %unique_words;
+    my @header = sort keys %Term_Occurrence_Of;
     push @header, '_class_';
     print join("\t", @header), "\n";
 
@@ -96,7 +96,7 @@ sub print_table {
 # Calculates Inverse Document Frequency factor for term passed as argument.
 sub calculate_idf_for_term {
     my $term = shift;
-    return log10(scalar(@documents) / term_occurrence_in_documents($term));
+    return log10(scalar(@Documents) / term_occurrence_in_documents($term));
 }
 
 # Sums weight of all terms in document vector, that is passed
@@ -139,17 +139,17 @@ sub calculate_normalization_factor {
 
 # Parsing command line arguments to corresponding variables.
 GetOptions(
-    "input-file|f=s"        => \$input_file,
-    "minimal-length|l=i"    => \$minimal_length,
-    "minimal-occurrence|n=i" => \$minimal_occurrence,
-    "local-weight|w=s"      => \$local_weight
+    "input-file|f=s"        => \$Input_File,
+    "minimal-length|l=i"    => \$Minimal_Length,
+    "minimal-occurrence|n=i" => \$Minimal_Occurrence,
+    "local-weight|w=s"      => \$Local_Weight
 ) or die "Error in command line arguments\n";
 
 # Checking valid if local_weight has either "tp" or "tf" value
 die "Invalid local weight value provided.\nPlease provide either 'tp' (default) or 'tf' value\n"
-    unless ($local_weight eq "tp" or $local_weight eq "tf");
+    unless ($Local_Weight eq "tp" or $Local_Weight eq "tf");
 
-open F, "$input_file" or die "Can't open file $input_file\n";
+open F, "$Input_File" or die "Can't open file $Input_File\n";
 
 # Processing input file
 for my $line (<F>) {
@@ -166,16 +166,16 @@ for my $line (<F>) {
 
     # Checking if words in line have the minimal length
     for my $word (@words) {
-        if (length($word) >= $minimal_length) {
+        if (length($word) >= $Minimal_Length) {
             $line{$word}++;
 
             # Word is put into hash of unique words
             # word => number of occurrences across all documents (lines)
-            $unique_words{$word}++;
+            $Term_Occurrence_Of{$word}++;
         }
     }
 
-    if ($local_weight eq 'tp') {
+    if ($Local_Weight eq 'tp') {
         # In case of local weight set to "Term Presence"
         # Turn values into "1" - occurred, "0" - didn't occur
         for my $word (keys %line) {
@@ -188,18 +188,18 @@ for my $line (<F>) {
     $line{_class_} = $class;
 
     # Pushing line vector into array of documents
-    push @documents, \%line;
+    push @Documents, \%line;
 }
 
 # Remove words with occurrence less than specified number of minimal occurrences
-for my $word (keys %unique_words) {
-    delete $unique_words{$word}
-        if ($unique_words{$word} < $minimal_occurrence);
+for my $word (keys %Term_Occurrence_Of) {
+    delete $Term_Occurrence_Of{$word}
+        if ($Term_Occurrence_Of{$word} < $Minimal_Occurrence);
 }
 
 # Calculate corresponding values for each term in each document.
 # Applies global weight and normalization factor.
-for my $doc (@documents) {
+for my $doc (@Documents) {
     my $line_sum = sum_all_weights_in_document($doc);
 
     while (my ($term, $value) = each %{$doc}) {
