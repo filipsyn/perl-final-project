@@ -332,18 +332,18 @@ init_calibration();
 for my $iteration (1 .. $Iterations_Limit) {
     # Send activation signals between nodes
     for my $link_ref (@Links) {
-        my $initial_node = $$link_ref{initial_node};
-        my $terminal_node = $$link_ref{terminal_node};
+        my $initial_node = $link_ref->{initial_node};
+        my $terminal_node = $link_ref->{terminal_node};
         my $initial_value = $Node{$initial_node}->{value};
-        my $weight = $Link_Weight_For{$$link_ref{type}};
+        my $weight = $Link_Weight_For{$link_ref->{type}};
 
         send_activation(-initial_node => $initial_node, -terminal_node => $terminal_node, -weight => $weight);
 
         # Check if this link type is reciprocal
-        next unless (exists $Reciprocal_Link_For{$$link_ref{type}});
+        next unless (exists $Reciprocal_Link_For{$link_ref->{type}});
 
         # Find link weight corresponding to reciprocal link
-        $weight = $Link_Weight_For{$Reciprocal_Link_For{$$link_ref{type}}};
+        $weight = $Link_Weight_For{$Reciprocal_Link_For{$link_ref->{type}}};
         ($initial_node, $terminal_node) = ($terminal_node, $initial_node);
         $initial_value = $Node{$initial_node}->{value};
 
